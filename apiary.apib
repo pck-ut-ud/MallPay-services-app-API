@@ -148,15 +148,15 @@ Cancel selected contract.
 # Data Structures
 
 ## AuthorizationRequest (object)
-Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
-
 ### Properties
-+ `Property1`: (string)
++ `username`: `eShopUsername` (string, required) - Partner username
++ `password`: `eShopPassword` (string, required) - Partner password
+
 
 ## AuthorizationResponse (object)
-
 ### Properties
-+ `Property2`: (string)
++ `accessToken`: `secretaccessToken` (string, required) - Secret access token
++ `expiresIn`: 7200 (number, required) - Remaining token validity time (in seconds)
 
 
 
@@ -164,12 +164,11 @@ Customer consent for processing of personal data according to GDPR. `slug` uniqu
 Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
 
 ### Properties
-+ `items`: (array[ServiceRequestProduct], required) -- Array of products you want to receive possible services for.
++ `items`: (array[ServiceRequestProduct], required) - Array of products you want to receive possible services for.
 
 ## RequestServicesResponse (object)
-
 ### Properties
-+ `offersId`: 'UUID-comes-here' (string, required) -- Id of the offers
++ `offersId`: 'UUID-comes-here' (string, required) - Id of the offers
 + `offers`: (array[ServiceResponseGroup], required)
 
 
@@ -240,8 +239,8 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 
 ## PriceAmount (object)
 ### Properties
-+ `priceIncVat`: 750000 (number) -- Price including two decimal numbers (750000 = 7500,-).
-+ `currency`: CZK (string, required) -- Currenecy is required in absolute value prices.
++ `priceIncVat`: 750000 (number) - Price including two decimal numbers (750000 = 7500,-).
++ `currency`: CZK (string, required) - Currenecy is required in absolute value prices.
 
 
 ## AdditionalInfo (object)
@@ -252,42 +251,42 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 
 ## ServiceRequestProduct (object)
 ### Properties
-+ `productName`: Nikon F (string, optional, nullable) -- Product name
++ `productName`: Nikon F (string, optional, nullable) - Product name
 + One Of
-    + `productEan`: 1123456789123 (number, optional, nullable) -- GTIN (EAN13), 13 or 14 digits length
-    + `productCode`: NIKON-F-BLACK-1964 (string, optional, nullable) -- Is this required at all?
+    + `productEan`: 1123456789123 (number, optional, nullable) - GTIN (EAN13), 13 or 14 digits length
+    + `productCode`: NIKON-F-BLACK-1964 (string, optional, nullable) - Is this required at all?
 + One Of
  <!-- We have to decide here if we want textual or code-based categories. Which one is more advanageous? -->
-    + `productCategoryText`: Camera, Still Picture, Analog, 35mm (string, required) --<?-- Do we require textual category or category code?-->
-    + `productCategoryCode`: 1944 (number, required)  --<?-- Do we require textual category or category code? -->
+    + `productCategoryText`: Camera, Still Picture, Analog, 35mm (string, required) -<?-- Do we require textual category or category code?-->
+    + `productCategoryCode`: 1944 (number, required)  -<?-- Do we require textual category or category code? -->
 + `productQuantity`: 2 (number, required)
-+ `productPricePerPiece`: (PriceAmount, required) --<?-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. -->
++ `productPricePerPiece`: (PriceAmount, required) -<?-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. -->
 + `productCondition`: (enum, required)
-    + `new` -- new product
-    + `used` -- used product
-    + `unpacked` -- like new product, possibly returned by customer in 14 day period after purchase
+    + `new` - new product
+    + `used` - used product
+    + `unpacked` - like new product, possibly returned by customer in 14 day period after purchase
     + `other`
 
 
 ## ServiceResponseItem (object)
 ### Properties
 + `serviceName`: `ADP (Accidental Damage Protection) Insurance` (string, required)
-+ `serviceDescription`: `Description of the service, may be quite long` (string, optional, nullable) -- Description of a service offering item in the group.
-+ `servicePriority`: 1 (number, optional, nullable) -- Offer ordering information, lower number means higher priority.
-+ `servicePriceType`: (enum, required) -- Type of offer price
-    + `absolute` --  Price of offer is absolute
-    + `percent` -- Price of offer is constructed as a fraction of `Price` of product this service is covering.
-+ `servicePrice`: 1250 (PriceAmount, required) -- Price of this particular service offer
-+ `serviceAdditionalInfo`: (array[AdditionalInfo], optional, nullable) -- Additional info for the item
++ `serviceDescription`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
++ `servicePriority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
++ `servicePriceType`: (enum, required) - Type of offer price
+    + `absolute` -  Price of offer is absolute
+    + `percent` - Price of offer is constructed as a fraction of `Price` of product this service is covering.
++ `servicePrice`: 1250 (PriceAmount, required) - Price of this particular service offer
++ `serviceAdditionalInfo`: (array[AdditionalInfo], optional, nullable) - Additional info for the item
 
 
 ## ServiceResponseGroup (object)
 ### Properties
-+ `serviceGroupId`: 1 (number, required) -- Unique Id of the group.
-+ `serviceGroupName`: Insurance 1 (string, required) -- Name of options group, will be used for display.
-+ `serviceGroupDescription`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) -- Description of the group, to display to customers.
-+ `serviceGroupOptions`: (array[ServiceResponseItem], required) -- A set of mutually exclusive options of (roughly) the same meaning, this group is made of.
-+ `serviceGroupPriority`: 1 (number, optional, nullable) -- Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
-+ `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) -- Ids of groups this group is mutually exclusive with. Customer cannot select items from this group and **excludes** group.
-+ `serviceGroupProducts`: [1, 2] (array[number], optional, nullable) -- The ID of product this service offer applies to. Most of the time, this will contain only one product.
-+ `serviceGroupAdditionalInfo`: (array[AdditionalInfo], optional, nullable) -- Additional Info for the ServiceGroup
++ `serviceGroupId`: 1 (number, required) - Unique Id of the group.
++ `serviceGroupName`: Insurance 1 (string, required) - Name of options group, will be used for display.
++ `serviceGroupDescription`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) - Description of the group, to display to customers.
++ `serviceGroupOptions`: (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning, this group is made of.
++ `serviceGroupPriority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
++ `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select items from this group and **excludes** group.
++ `serviceGroupProducts`: [1, 2] (array[number], optional, nullable) - The ID of product this service offer applies to. Most of the time, this will contain only one product.
++ `serviceGroupAdditionalInfo`: (array[AdditionalInfo], optional, nullable) - Additional Info for the ServiceGroup
