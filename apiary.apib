@@ -10,6 +10,7 @@ This API description is a work in progress. API is not stabilized yet and may ch
 ## General Info
 
 Here comes the general info about this RESTfull API.
+The API is versioned - the purpose is to enable API development without breaking older versions in use. The version is part of the endpoint URL (ie `/v1/`).
 
 ### What's the purpose of this API
 
@@ -27,7 +28,7 @@ This API allows partners to retrieve info about services available for eligible 
 
 ## API Endpoints Description
 
-### Login
+### Authorize
 
 Enables the partner to log in. It is required to use all the other endpoints.
 
@@ -62,30 +63,177 @@ Provides information about created contracts and their status.
 
 
 
-## Questions Collection [/questions]
+## Authorize [/v1/partner/authorize]
 
-### List All Questions [GET]
+### Request Authorization [POST]
+Log in to be able to use other endpoints.
 
-+ Response 200 (application/json)
++ Request (application/json; charset=utf-8)
+	+ Attributes (AuthorizationRequest)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
++ Response 200 (application/json; charset=utf-8)
+	+ Attributes (AuthorizationResponse)
+
+
+## Request Services [/v1/services]
+
+### Request Available Services [GET]
+Get info on services available for sent products.
+
++ Request (application/json; charset=utf-8)
+	+ Attributes (RequestServicesRequest)
+
++ Response 200 (application/json; charset=utf-8)
+	+ Attributes (RequestServicesResponse)
+
+
+## Create Contract [/v1/contracts]
+
+### Create Contract [POST]
+Create a contract based on available services offering.
+
++ Request (application/json; charset=utf-8)
+	+ Attributes (ContractCreateRequest)
+
++ Response 200 (application/json; charset=utf-8)
+	+ Attributes (ContractCreateResponse)
+
+
+## Contract Status [/v1/contracts/{contract_id}]
+
+### Contract Status [GET]
+Get status of selected Contract.
+
++ Request (application/json; charset=utf-8)
+	+ Attributes (ContractStatusRequest)
+
++ Response 200 (application/json; charset=utf-8)
+	+ Attributes (ContractStatusResponse)
+
+
+## Update Contract [/v1/contracts/{contract_id}]
+
+### Update Contract [PUT]
+Update selected contract.
+
++ Request (application/json; charset=utf-8)
+	+ Attributes (ContractUpdateRequest)
+
++ Response 200 (application/json; charset=utf-8)
+	+ Attributes (ContractUpdateResponse)
+
+
+## Activate Contract [/v1/contracts/{contract_id}/activate]
+
+### Activate Contract [POST]
+Activate selected contract.
+
++ Request (application/json; charset=utf-8)
+	+ Attributes (ContractActivateRequest)
+
++ Response 200 (application/json; charset=utf-8)
+	+ Attributes (ContractActivateResponse)
+
+
+## Cancel Contract [/v1/contracts/{contract_id}/cancel]
+
+### Cancel Contract [POST]
+Cancel selected contract.
+
++ Request (application/json; charset=utf-8)
+	+ Attributes (ContractCancelRequest)
+
++ Response 200 (application/json; charset=utf-8)
+	+ Attributes (ContractCancelResponse)
+
+
+
+
+## AuthorizationRequest (object)
+Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
+
+### Properties
++ Property1
+
+## AuthorizationResponse (object)
+
+### Properties
++ Property1
+
+
+
+## RequestServicesRequest (object)
+Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
+
+### Properties
++ Property1
+
+## RequestServicesResponse (object)
+
+### Properties
++ Property1
+
+
+
+## ContractCreateRequest (object)
+Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
+
+### Properties
++ Property1
+
+## ContractCreateResponse (object)
+
+### Properties
++ Property1
+
+
+
+## ContractStatusRequest (object)
+
+
+### Properties
++ Property1
+
+## ContractStatusResponse (object)
+
+### Properties
++ Property1
+
+
+
+## ContractUpdateRequest (object)
+Update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
+
+### Properties
++ Property1
+
+## ContractUpdateResponse (object)
+
+### Properties
++ Property1
+
+
+
+## ContractActivateRequest (object)
+The contract has to be activated for us to be able to fullfill it.
+
+### Properties
++ Property1
+
+## ContractActivateResponse (object)
+
+### Properties
++ Property1
+
+
+
+## ContractCancelRequest (object)
+A running `contract` can also be canceled under certain conditions (ie. in 14 days after goods delivery to customer).
+
+### Properties
++ Property1
+
+## ContractCancelResponse (object)
+
+### Properties
++ Property1
