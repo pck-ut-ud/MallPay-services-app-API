@@ -244,7 +244,7 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 
 
 ## AdditionalInfo (object)
-<?-- Stylovému info bych se v API raději vyhnul -->
+<!-- Stylovému info bych se v API raději vyhnul -->
 ### Properties
 + `styleInfo`: style info (string, optional, nullable)
 
@@ -257,10 +257,10 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
     + `productCode`: NIKON-F-BLACK-1964 (string, optional, nullable) - Is this required at all?
 + One Of
  <!-- We have to decide here if we want textual or code-based categories. Which one is more advanageous? -->
-    + `productCategoryText`: Camera, Still Picture, Analog, 35mm (string, required) -<?-- Do we require textual category or category code?-->
-    + `productCategoryCode`: 1944 (number, required)  -<?-- Do we require textual category or category code? -->
+    + `productCategoryText`: Camera, Still Picture, Analog, 35mm (string, required) -<!-- Do we require textual category or category code?-->
+    + `productCategoryCode`: 1944 (number, required)  -<!-- Do we require textual category or category code? -->
 + `productQuantity`: 2 (number, required)
-+ `productPricePerPiece`: (PriceAmount, required) -<?-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. -->
++ `productPricePerPiece`: (PriceAmount, required) -<!-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. -->
 + `productCondition`: (enum, required)
     + `new` - new product
     + `used` - used product
@@ -277,6 +277,7 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
     + `absolute` -  Price of offer is absolute
     + `percent` - Price of offer is constructed as a fraction of `Price` of product this service is covering.
 + `servicePrice`: 1250 (PriceAmount, required) - Price of this particular service offer
++ `serviceStandalone`: true (boolean, required) - Is the service available stand-alone or only as a part of service package?
 + `serviceAdditionalInfo`: (array[AdditionalInfo], optional, nullable) - Additional info for the item
 
 
@@ -290,3 +291,77 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 + `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select items from this group and **excludes** group.
 + `serviceGroupProducts`: [1, 2] (array[number], optional, nullable) - The ID of product this service offer applies to. Most of the time, this will contain only one product.
 + `serviceGroupAdditionalInfo`: (array[AdditionalInfo], optional, nullable) - Additional Info for the ServiceGroup
+
+
+## Contract (object)
+This is a contract object that the API returns in resonse to most requests.
+### Properties
++ `contractId`: kasjfkjůladsfkj-adf-12 (string, required) - Contract ID
++ `contractItems`: (array[ContractItem], required) - Subject of the contract
++ `contractActivation`: `2018-05-05 18:34.0002T+2` (string, optional, nullable) - Datetime of contract activation
++ `contractCancellation`: `2018-12-31 05:11.1234T+1 (string, optional, nullable) - Datetime of contract cancellation
++ `contractCustomer`: (ContractCustomer, required) - Destionation customer of the services
+
+
+## ContractItem
+### Properties
++ `itemName`: `Nikon F` (string, require)
++ One Of:
+    + `itemCode`: `fasd-fasd` (string, required)
+    + `itemEAN`: 1234567891234 (number, required)
+<!-- Do we want to allow both? What will be required to identify the product? -->
++ `itemSerialNumber`: `COM-456-456` (string, required)
+<!-- Should serial numbers be compulsory? What should be done in case of products, that don't have SN? -->
++ `itemServices`: 
+
+
+## ContractCustomerPerson
+### Properties
++ `firstName`: `Lukáš` (string, required) - Customer first name
++ `familyName`: `Říha` (string, required) - Customer family name
+
+
+## ContractCustomerCompany
+### Properties
++ `companyName`: `Usertech Digital s.r.o.` (string, required) - Company name
++ `companyICO`: 12345678 (number, required) - Company ICO, 8 digits
++ `contactPerson` (ContractCustomerPerson, required) - Company contacat person
+
+
+## Address
+### Properties
++ One Of:
+    + properties:
+        + `streetName`: `Rohatého` (string, required)
+        + `streetNumber`: `666/32` (string, required)
+    + `streetAndNumber`: `Rohatého 666/32` (string, required)
+<!-- We have to decide if we want to allow both types of street format of just one of the above. Is it important in any way for the processing that will follow? -->
++ `city`: `Praha 5` (string, required) - Address city
++ `zip`: `15000` (string, required) - Address ZIP
++ `country`: `Czech Republic` (string, required) - Country
+<!-- Shall we allow also another contries, apart from CS? -->
+
+
+## ContractCustomer
+### Properties
++ One Of:
+    + ContractCustomerPerson - Usage of this element signifies private services purchase
+    + ContractCustomerCompany - Usage of this element signifies a business services purchase
++ `address`: (Address, required) - Customer contact address
+<!-- Do we really need customer contract address or this can be handled via eshop? -->
+
+
+## Error (object)
+### Properties
++ code: `ERR_1000_SOME_ERROR_CODE` (string, required) - Unique internal error code
++ message: `Some error/validation message description` (string, required) - Human readable error description (non-localized)
+<!-- + severity (enum, required)
+    + ERROR - Critical error, execution cannot continue. This MUST be indicated also by appropriate HTTP status code
+    + WARN - Non-critical error, execution can continue but further user interaction is advisable. This MIGHT be indicated also by appropriate HTTP status code
+    + INFO - Information only, execution can continue without user interaction -->
++ attribute: `personalBirthNumber` (string, optional) - JSON path of request attribute that caused the error (if applicable)
+<!-- + ticketId: `UAT1:AMS:20160516-091658.450:45e4` (string, optional) - Internal ticket ID, used for error backtracking -->
+
+## Errors (object)
+### Properties
++ errors (array[Error], fixed-type, required) - Array with errors
