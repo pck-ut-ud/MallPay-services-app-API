@@ -1,9 +1,66 @@
 FORMAT: 1A
 HOST: http://polls.apiblueprint.org/
 
-# MIA API
+# MallPay Insurance Application API
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+## About
+
+This API description is a work in progress. API is not stabilized yet and may change without notice.
+
+## General Info
+
+Here comes the general info about this RESTfull API.
+
+### What's the purpose of this API
+
+This API allows partners to retrieve info about services available for eligible products and operations required to set-up such services for their customers.
+
+### General workflow
+
+1. Log in.
+2. Request services available for products specified.
+3. Create a contract based on above offer of services.
+4. Provide required information for the contract.
+5. Activate the contract.
+6. Cancel the contract.
+7. Contract status information.
+
+## API Endpoints Description
+
+### Login
+
+Enables the partner to log in. It is required to use all the other endpoints.
+
+### Request Services
+
+Lets the partner to request available services for products. In order to do so, the partner has to provide information about products they require services for. Endpoint response contains services (and their possible combinations) for the provided products.
+
+### Create Contract
+
+Based on an offer received from Request Services endpoint and their customer choices, enables a partner to create a contract for the services selected. If it was successfully created, response contains information about the created contract, errors explaining what went wrong otherwise.
+
+### Update Contract
+
+Allows a partner to update a previously created non-activated? contract. This may be needed to fill-in certain allowed, previously unknown data at the time of product packaging or shipping - product serial number, for example. Only some parts of the contract may be updated this way.
+In case of success, response contains updated contract, errors otherwise.
+
+### Activate Contract
+
+In order for us to be able to fulfill any contract, the contract has to be activated first. This typically happens at the time of product shipping or delivery, depending on partner circumstances.
+
+**NOTE:** Activate Contract also sends contract activation information to customers e-mail address.
+
+### Cancel Contract
+
+Subject to general terms and conditions, a contract can also be canceled. Response contains info if the contract was successfully canceled. If it was not, response contains information why it was not canceled.
+
+**NOTE:** Cancel Contract also sends contract cancellation information message to customers e-mail address.
+
+### Contract Status
+
+Provides information about created contracts and their status. 
+
+
 
 ## Questions Collection [/questions]
 
@@ -32,49 +89,3 @@ Polls is a simple API allowing consumers to view polls and vote in them.
                 ]
             }
         ]
-
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
-
-+ Request (application/json)
-
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
-
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
-
-    + Body
-
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
-            }
