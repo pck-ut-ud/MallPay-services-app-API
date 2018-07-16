@@ -3,7 +3,6 @@ HOST: http://polls.apiblueprint.org/
 
 # MallPay Insurance Application API
 
-<!--
 ## About
 
 This API description is a work in progress. API is not stabilized yet and may change without notice.
@@ -61,9 +60,9 @@ Subject to general terms and conditions, a contract can also be canceled. Respon
 ### Contract Status
 
 Provides information about created contracts and their status. 
--->
 
-<!--
+
+
 ## Authorize [/v1/partner/authorize]
 
 ### Request Authorization [POST]
@@ -100,7 +99,7 @@ Create a contract based on available services offering.
     + Attributes (ContractCreateResponse)
 
 
-## Contract Status [/v1/contracts/{contract_id}]
+## Contract Operations [/v1/contracts/{contract_id}]
 
 ### Contract Status [GET]
 Get status of selected Contract.
@@ -110,9 +109,6 @@ Get status of selected Contract.
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractStatusResponse)
-
-
-## Update Contract [/v1/contracts/{contract_id}]
 
 ### Update Contract [PUT]
 Update selected contract.
@@ -146,10 +142,11 @@ Cancel selected contract.
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractCancelResponse)
--->
 
 
-<!--
+
+# Data Structures
+
 ## AuthorizationRequest (object)
 Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
 
@@ -238,5 +235,3 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 
 ### Properties
 + `Property14`: (string)
--->
-
