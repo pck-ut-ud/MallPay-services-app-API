@@ -164,7 +164,7 @@ Customer consent for processing of personal data according to GDPR. `slug` uniqu
 Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
 
 ### Properties
-+ `Property3`: (string)
++ `items`: (array[ServiceRequestProduct], required) -- Array of products you want to receive possible services for.
 
 ## RequestServicesResponse (object)
 
@@ -211,7 +211,6 @@ Update selected `Contract`. Only allows updating certain contract properties. in
 + `Property10`: (string)
 
 
-
 ## ContractActivateRequest (object)
 The contract has to be activated for us to be able to fullfill it.
 
@@ -235,3 +234,26 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 
 ### Properties
 + `Property14`: (string)
+
+
+
+## Amount (object)
++ `priceIncVat`: 750000 (number) -- Price including two decimal numbers (750000 = 7500,-).
++ `currency`: CZK (string)
+
+## ServiceRequestProduct (object)
++ `productName`: Nikon F (string, optional, nullable) -- Product name
++ One Of
+    + `productEan`: 1123456789123 (number, optional, nullable) -- GTIN (EAN13), 13 or 14 digits length
+    + `productCode`: NIKON-F-BLACK-1964 (string, optional, nullable) -- Is this required at all?
++ One Of
+ <!-- We have to decide here if we want textual or code-based categories. Which one is more advanageous? -->
+    + `productCategoryText`: Camera, Still Picture, Analog, 35mm (string, required) -- Do we require textual category or category code?
+    + `productCategoryCode`: 1944 (number, required)  -- Do we require textual category or category code?
++ `productQuantity`: 2 (number, required)
++ `productPricePerPiece`: (Amount, required) -- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it.
++ `productCondition`: (enum, required)
+    + `new` -- new product
+    + `used` -- used product
+    + `unpacked` -- like new product, possibly returned by customer in 14 day period after purchase
+    + `other`
