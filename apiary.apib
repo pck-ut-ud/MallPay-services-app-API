@@ -62,7 +62,6 @@ Subject to general terms and conditions, a contract can also be canceled. Respon
 Provides information about created contracts and their status. 
 
 
-
 ## Authorize [/v1/partner/authorize]
 
 ### Request Authorization [POST]
@@ -109,7 +108,7 @@ Get status of selected Contract.
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractStatusResponse)
 
-### Update Contract (Full) [PUT]
+### Update Contract Full [PUT]
 Update selected contract.
 
 + Request (application/json; charset=utf-8)
@@ -119,11 +118,49 @@ Update selected contract.
     + Attributes (ContractUpdateResponse)
 
 
-### Update Contract (Partial) [PATCH]
+### Update Contract Partial [PATCH]
 Update selected contract.
 
 + Request (application/json; charset=utf-8)
     + Attributes (ContractUpdateRequest)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (ContractUpdateResponse)
+
+
+### Add Contract Item [POST]
+Update selected contract item
+
++ Request (application/json; charset=utf-8)
+    + Attributes (ContractItemAddRequest)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (ContractUpdateResponse)
+
+
+## Contract Item Operations [/v1/contracts/{contract_id}/item/{item_id}]
+
+### Get Contract Item [GET]
+Get selected item from contract
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (ContractResponseItem)
+
+
+### Update Contract Item [PUT]
+Update selected contract item
+
++ Request (application/json; charset=utf-8)
+    + Attributes (ContractItemUpdateRequest)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (ContractUpdateResponse)
+
+### Delete Contract Item [DELETE]
+Update selected contract item
+
++ Request (application/json; charset=utf-8)
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractUpdateResponse)
@@ -194,11 +231,19 @@ Returns created `Contract`, errors otherwise.
 ### Properties
 
 
-## ContractUpdateRequest (object)
+## ContractUpdateRequest (UpdateContract)
 Update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
 ### Properties
 
 ## ContractUpdateResponse (ResponseContract)
+### Properties
+
+
+## ContractItemAddRequest (ContractRequestItem)
+### Properties
+
+
+## ContractItemUpdateRequest (ContractRequestItem)
 ### Properties
 
 
@@ -282,12 +327,16 @@ Price of service including pricing type
 + `serviceGroupAdditionalInfo` (array[AdditionalInfo], optional, nullable) - Additional Info for the ServiceGroup
 
 
-## BaseContract (object)
+## SimpleContract (object)
+### Properties
++ `contractCustomer` (ContractCustomer, required) - Destionation customer of the services
+<!-- Should the activation be per contract and per service? I would definitelly make it per service, enablest services with different lengths. the question is the contract...) -->
+
+## BaseContract (SimpleContract)
 ### Properties
 + `contractActivation`: `2018-05-05 18:34.0002T+2` (string, optional, nullable) - Datetime of contract activation
 + `contractCancellation`: `2018-12-31 05:11.1234T+1` (string, optional, nullable) - Datetime of contract cancellation
 <!-- Should the activation be per contract and per service? I would definitelly make it per service, enablest services with different lengths. the question is the contract...) -->
-+ `contractCustomer` (ContractCustomer, required) - Destionation customer of the services
 
 ## ResponseContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
@@ -295,7 +344,12 @@ This is a contract object that the API returns in resonse to most requests.
 + `contractId`: kasjfkjůladsfkj-adf-12 (string, required) - Contract ID
 + `contractItems` (array[ContractResponseItem], required) - Subject of the contract
 
-## CreateContract (BaseContract)
+## CreateContract (SimpleContract)
+This is a contract object that the API returns in resonse to most requests.
+### Properties
++ `contractItems` (array[ContractRequestItem], required) - Subject of the contract
+
+## UpdateContract (SimpleContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
 + `contractItems` (array[ContractRequestItem], required) - Subject of the contract
