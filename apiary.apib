@@ -105,12 +105,21 @@ Create a contract based on available services offering.
 Get status of selected Contract.
 
 + Request (application/json; charset=utf-8)
-    + Attributes (ContractStatusRequest)
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractStatusResponse)
 
-### Update Contract [PUT]
+### Update Contract (Full) [PUT]
+Update selected contract.
+
++ Request (application/json; charset=utf-8)
+    + Attributes (ContractUpdateRequest)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (ContractUpdateResponse)
+
+
+### Update Contract (Partial) [PATCH]
 Update selected contract.
 
 + Request (application/json; charset=utf-8)
@@ -122,11 +131,10 @@ Update selected contract.
 
 ## Activate Contract [/v1/contracts/{contract_id}/activate]
 
-### Activate Contract [POST]
+### Activate Contract [PUT]
 Activate selected contract.
 
 + Request (application/json; charset=utf-8)
-    + Attributes (ContractActivateRequest)
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractActivateResponse)
@@ -134,11 +142,10 @@ Activate selected contract.
 
 ## Cancel Contract [/v1/contracts/{contract_id}/cancel]
 
-### Cancel Contract [POST]
+### Cancel Contract [PUT]
 Cancel selected contract.
 
 + Request (application/json; charset=utf-8)
-    + Attributes (ContractCancelRequest)
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractCancelResponse)
@@ -152,89 +159,64 @@ Cancel selected contract.
 + `username`: `eShopUsername` (string, required) - Partner username
 + `password`: `eShopPassword` (string, required) - Partner password
 
-
 ## AuthorizationResponse (object)
 ### Properties
 + `accessToken`: `secretaccessToken` (string, required) - Secret access token
 + `expiresIn`: 7200 (number, required) - Remaining token validity time (in seconds)
 
 
-
 ## RequestServicesRequest (object)
 Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
-
 ### Properties
-+ `items`: (array[ServiceRequestProduct], required) - Array of products you want to receive possible services for.
++ `items` (array[ServiceRequestProduct], required) - Array of products you want to receive possible services for.
 
 ## RequestServicesResponse (object)
 ### Properties
 + `offersId`: `UUID-comes-here` (string, required) - Id of the offers
-+ `offers`: (array[ServiceResponseGroup], required)
++ `offers` (array[ServiceResponseGroup], required)
 
 
 
-## ContractCreateRequest (object)
-Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
-
+## ContractCreateRequest (CreateContract)
+Request for creating contract.
 ### Properties
-+ `Property5`: (string)
 
-## ContractCreateResponse (object)
-
+## ContractCreateResponse (ResponseContract)
+Returns created `Contract`, errors otherwise.
 ### Properties
-+ `Contract`: (Contract, required) - created Contract
 
 
 
 ## ContractStatusRequest (object)
-
-
 ### Properties
-+ `Property7`: (string)
 
-## ContractStatusResponse (object)
-
+## ContractStatusResponse (ResponseContract)
 ### Properties
-+ `Property8`: (string)
-
 
 
 ## ContractUpdateRequest (object)
 Update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
-
 ### Properties
-+ `Property9`: (string)
 
-## ContractUpdateResponse (object)
-
+## ContractUpdateResponse (ResponseContract)
 ### Properties
-+ `Property10`: (string)
 
 
 ## ContractActivateRequest (object)
 The contract has to be activated for us to be able to fullfill it.
-
 ### Properties
-+ `Property11`: (string)
 
-## ContractActivateResponse (object)
-
+## ContractActivateResponse (ResponseContract)
 ### Properties
-+ `Property12`: (string)
-
 
 
 ## ContractCancelRequest (object)
 A running `contract` can also be canceled under certain conditions (ie. in 14 days after goods delivery to customer).
-
 ### Properties
-+ `Property13`: (string)
 
-## ContractCancelResponse (object)
-
+## ContractCancelResponse (ResponseContract)
+The response is a `contract` as represented in our system or errors, if somethong went wrong.
 ### Properties
-+ `Property14`: (string)
-
 
 
 ## PriceAmount (object)
@@ -256,16 +238,25 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
     + `productEan`: 1123456789123 (number, optional, nullable) - GTIN (EAN13), 13 or 14 digits length
     + `productCode`: NIKON-F-BLACK-1964 (string, optional, nullable) - Is this required at all?
 + One Of
- <!-- We have to decide here if we want textual or code-based categories. Which one is more advanageous? -->
     + `productCategoryText`: Camera, Still Picture, Analog, 35mm (string, required) -<!-- Do we require textual category or category code?-->
-    + `productCategoryCode`: 1944 (number, required)  -<!-- Do we require textual category or category code? -->
+    + `productCategoryCode`: 1944 (number, required) -<!-- Do we require textual category or category code? -->
+<!-- We have to decide here if we want textual or code-based categories. Which one is more advanageous? -->    
 + `productQuantity`: 2 (number, required)
-+ `productPricePerPiece`: (PriceAmount, required) -<!-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. Also, it might be necessary for fullfillment - how would you pay for a product if you didn't know it's price? -->
-+ `productCondition`: (enum, required)
++ `productPricePerPiece` (PriceAmount, required) -<!-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. Also, it might be necessary for fullfillment - how would you pay for a product if you didn't know it's price? -->
++ `productCondition`: `new` (enum, required)
     + `new` - new product
     + `used` - used product
     + `unpacked` - like new product, possibly returned by customer in 14 day period after purchase
     + `other`
+
+
+## ServicePrice (object)
+Price of service including pricing type
+### Properties
++ `servicePriceType`: `absolute` (enum, required) - Type of offer price
+    + `absolute` -  Price of offer is absolute
+    + `percent` - Price of offer is constructed as a fraction of `Price` of product this service is covering.
++ `servicePriceAmount`: 1250 (PriceAmount, required) - Price of this particular service offer
 
 
 ## ServiceResponseItem (object)
@@ -274,12 +265,9 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 + `serviceName`: `ADP (Accidental Damage Protection) Insurance` (string, required)
 + `serviceDescription`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `servicePriority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
-+ `servicePriceType`: (enum, required) - Type of offer price
-    + `absolute` -  Price of offer is absolute
-    + `percent` - Price of offer is constructed as a fraction of `Price` of product this service is covering.
-+ `servicePrice`: 1250 (PriceAmount, required) - Price of this particular service offer
++ `servicePrice` (ServicePrice, required) - Price of service including type of price
 + `serviceStandalone`: true (boolean, required) - Is the service available stand-alone or only as a part of service package?
-+ `serviceAdditionalInfo`: (array[AdditionalInfo], optional, nullable) - Additional info for the item
++ `serviceAdditionalInfo` (array[AdditionalInfo], optional, nullable) - Additional info for the item
 
 
 ## ServiceResponseGroup (object)
@@ -287,34 +275,47 @@ A running `contract` can also be canceled under certain conditions (ie. in 14 da
 + `serviceGroupId`: 1 (number, required) - Unique Id of the group.
 + `serviceGroupName`: Insurance 1 (string, required) - Name of options group, will be used for display.
 + `serviceGroupDescription`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) - Description of the group, to display to customers.
-+ `serviceGroupOptions`: (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning, this group is made of.
++ `serviceGroupOptions` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning, this group is made of.
 + `serviceGroupPriority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
 + `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
 + `serviceGroupProducts`: [1, 2] (array[number], optional, nullable) - The ID of product this service offer applies to. Most of the time, this will contain only one product.
-+ `serviceGroupAdditionalInfo`: (array[AdditionalInfo], optional, nullable) - Additional Info for the ServiceGroup
++ `serviceGroupAdditionalInfo` (array[AdditionalInfo], optional, nullable) - Additional Info for the ServiceGroup
 
 
-## Contract (object)
-This is a contract object that the API returns in resonse to most requests.
+## BaseContract (object)
 ### Properties
-+ `contractId`: kasjfkjůladsfkj-adf-12 (string, required) - Contract ID
-+ `contractItems`: (array[ContractItem], required) - Subject of the contract
 + `contractActivation`: `2018-05-05 18:34.0002T+2` (string, optional, nullable) - Datetime of contract activation
 + `contractCancellation`: `2018-12-31 05:11.1234T+1` (string, optional, nullable) - Datetime of contract cancellation
 <!-- Should the activation be per contract and per service? I would definitelly make it per service, enablest services with different lengths. the question is the contract...) -->
-+ `contractCustomer`: (ContractCustomer, required) - Destionation customer of the services
++ `contractCustomer` (ContractCustomer, required) - Destionation customer of the services
 
-
-## ContractItem
+## ResponseContract (BaseContract)
+This is a contract object that the API returns in resonse to most requests.
 ### Properties
-+ `itemName`: `Nikon F` (string, require)
++ `contractId`: kasjfkjůladsfkj-adf-12 (string, required) - Contract ID
++ `contractItems` (array[ContractResponseItem], required) - Subject of the contract
+
+## CreateContract (BaseContract)
+This is a contract object that the API returns in resonse to most requests.
+### Properties
++ `contractItems` (array[ContractRequestItem], required) - Subject of the contract
+
+
+## ContractRequestItem
+### Properties
++ `itemName`: `Nikon F` (string, required) - Name of item
 + One Of
     + `itemCode`: `fasd-fasd` (string, required)
     + `itemEAN`: 1234567891234 (number, required)
 <!-- Do we want to allow both? What will be required to identify the product? -->
 + `itemSerialNumber`: `COM-456-456` (string, required)
 <!-- Should serial numbers be compulsory? What should be done in case of products, that don't have SN? -->
-+ `ConractServices`: (array[ContractItemService], required) - An array of Contract services for the item
++ `contractItemServices` (array[ContractItemService], required) - An array of Contract services for the item
+
+
+## ContractResponseItem (ContractRequestItem)
+### Properties
++ `itemId`: `235AF` (string, required) - ID of item in contract
 
 
 ## ContractItemService
@@ -322,10 +323,13 @@ This is a contract object that the API returns in resonse to most requests.
 + `offerId`: `UUID-comes-here` (string, required) - Id of the original offer the contract is based upon. Enables creating one contract
 + `serviceId`: 1 (number, required) - Id of the service option
 + `serviceGroupId`: 1 (number, required) - Id of the service group
++ `servicePrice` (ServicePrice, required) - service price including type
 + `serviceDescription`: `this is a shor description of the service` (string, optional, nullable) - Human readable description of the service
 <!-- Should the description be contained here? I guess so, will make the reading of the contract much easier -->
 + `serviceActivatedDate`: `2018-08-03 13:22:5000T+2` (string, nullable) - datetime of service option activation
-+ `serviceActiveUntil`: `2020-08-03 13:22:5000T+2` (string, nullable) - datetime of service expiration (when the service is no longer valid)
++ `serviceCancelledDate`: `2017-08-03 13:22:5000T+2` (string, nullable) - datetime of service cancellation
++ `serviceActiveUntilDate`: `2020-08-03 13:22:5000T+2` (string, nullable) - datetime of service expiration (when the service is no longer valid)
+<!-- Should the services be activatable/cancellable individually? -->
 
 
 ## ContractCustomerPerson
@@ -356,9 +360,9 @@ This is a contract object that the API returns in resonse to most requests.
 
 ## ContractCustomer
 ### Properties
-+ `contractCustomerPerson`: (ContractCustomerPerson, required) - Usage of this element signifies private services purchase
-+ `contractCustomerCompany`: (ContractCustomerCompany, optional, nullable) - Usage of this element signifies a business services purchase
-+ `contractCustomerAddress`: (Address, required) - Customer contact address
++ `contractCustomerPerson` (ContractCustomerPerson, required) - Usage of this element signifies private services purchase
++ `contractCustomerCompany` (ContractCustomerCompany, optional, nullable) - Usage of this element signifies a business services purchase
++ `contractCustomerAddress` (Address, required) - Customer contact address
 <!-- Do we really need customer contract address or this can be handled via eshop? -->
 
 
