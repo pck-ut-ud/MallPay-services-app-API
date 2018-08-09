@@ -390,19 +390,25 @@ This is a contract object that the API returns in resonse to most requests.
 + `companyICO`: 12345678 (number, required) - Company ICO, 8 digits
 
 
-## Address
+## Address (object)
+Address
 ### Properties
-+ One Of
-    + properties
-        + `streetName`: `Rohatého` (string, required)
-        + `streetNumber`: `666/32` (string, required)
-    + `streetAndNumber`: `Rohatého 666/32` (string, required)
-<!-- We have to decide if we want to allow both types of street format of just one of the above. Is it important in any way for the processing that will follow? -->
-+ `city`: `Praha 5` (string, required) - Address city
-+ `zip`: `15000` (string, required) - Address ZIP
-+ `country`: `Czech Republic` (string, required) - Country
-<!-- Shall we allow also another contries, apart from CS? -->
++ `name`: `John Doe` (string, optional) - Name on address
++ `country`: `CZ` (string, required)
 
+    Country.
+
+    (see [ISO 3166 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))
+
++ `city`: `Prague` (string, required) - City.
++ `streetAddress`: `Letenská` (string, required) - Street/city part.
++ `streetNumber`: `22` (string, required) - Street number
++ `zip`: `140 00` (string, required) - Postal code
++ `addressType` (enum, required) - Type of the address. Only some of the types are allowed in each context.
+    + `PERMANENT` - Permanent residential address
+    + `CONTACT` - Contact address
+    + `DELIVERY` - Delivery address
+    + `BILLING` - Billing address
 
 ## ContractCustomer
 ### Properties
