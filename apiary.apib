@@ -270,12 +270,6 @@ The response is a `contract` as represented in our system or errors, if somethon
 + `currency`: CZK (string, required) - Currenecy is required in absolute value prices.
 
 
-## AdditionalInfo (object)
-<!-- Stylovému info bych se v API raději vyhnul -->
-### Properties
-+ `styleInfo`: style info (string, optional, nullable)
-
-
 ## ServiceRequestProduct (object)
 ### Properties
 + `productName`: Nikon F (string, optional, nullable) - Product name
@@ -312,7 +306,6 @@ Price of service including pricing type
 + `servicePriority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
 + `servicePrice` (ServicePrice, required) - Price of service including type of price
 + `serviceStandalone`: true (boolean, required) - Is the service available stand-alone or only as a part of service package?
-+ `serviceAdditionalInfo` (array[AdditionalInfo], optional, nullable) - Additional info for the item
 
 
 ## ServiceResponseGroup (object)
@@ -324,7 +317,6 @@ Price of service including pricing type
 + `serviceGroupPriority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
 + `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
 + `serviceGroupProducts`: [1, 2] (array[number], optional, nullable) - The ID of product this service offer applies to. Most of the time, this will contain only one product.
-+ `serviceGroupAdditionalInfo` (array[AdditionalInfo], optional, nullable) - Additional Info for the ServiceGroup
 
 
 ## SimpleContract (object)
