@@ -283,18 +283,18 @@ The response is a `contract` as represented in our system or errors, if somethon
 + `productQuantity`: 2 (number, required)
 + `productPricePerPiece` (PriceAmount, required) -<!-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. Also, it might be necessary for fullfillment - how would you pay for a product if you didn't know it's price? -->
 + `productCondition`: `new` (enum, required)
-    + `new` - new product
-    + `used` - used product
-    + `unpacked` - like new product, possibly returned by customer in 14 day period after purchase
-    + `other`
+    + `NEW` - new product
+    + `USED` - used product
+    + `UNPACKED` - like new product, possibly returned by customer in 14 day period after purchase
+    + `OTHER`
 
 
 ## ServicePrice (object)
 Price of service including pricing type
 ### Properties
 + `servicePriceType`: `absolute` (enum, required) - Type of offer price
-    + `absolute` -  Price of offer is absolute
-    + `percent` - Price of offer is constructed as a fraction of `Price` of product this service is covering.
+    + `ABSOLUTE` -  Price of offer is absolute
+    + `PERCENT` - Price of offer is constructed as a fraction of `Price` of product this service is covering.
 + `servicePriceAmount`: 1250 (PriceAmount, required) - Price of this particular service offer
 
 
