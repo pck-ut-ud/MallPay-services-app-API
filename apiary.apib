@@ -209,8 +209,7 @@ Cancel selected contract.
 ## RequestServicesResponse (object)
 ### Properties
 + `offersId`: `UUID-comes-here` (string, required) - Id of the offers
-+ `items`: 
- (array[ServiceResponseGroup], required)
++ `items` (array[ServiceResponseGroup], required) - array of items with applicable services
 
 
 
@@ -280,7 +279,7 @@ Financial amount with VAT rate.
 
 
 ## ServiceAmount(VatAmount)
-Price of service including pricing type
+Type of financial ammount
 ### Properties
 + `servicePriceType`: `ABSOLUTE` (enum, optional, nullable) - Type of service offer price
     + `ABSOLUTE` -  Price of service offer is absolute
@@ -428,16 +427,18 @@ Address
 Customer data
 
 ### Properties
-+ `firstName`: `John` (string, optional) -  Customer first (given) name. Must be paired with `lastName`. Required if `fullName` is empty.
-+ `lastName`: `Newborn` (string, optional) - Customer last (family) name. Must be paired with `firstName`. Required if `fullName` is empty.
-+ `fullName`: `Ing. John Newborn, Csc.` (string, optional) - Customer full name, including academical degrees and salutation. Required only if `firstName` or `lastName` are empty.
-+ `titleBefore`: `Ing.` (string, optional) - Academical degree, in front of the name
-+ `titleAfter`: `CSc.` (string, optional) - Academical degree, behind name
++ One of
+    + properties
+        + `firstName`: `John` (string, required) -  Customer first (given) name. Must be paired with `lastName`. Required if `fullName` is empty.
+        + `lastName`: `Newborn` (string, required) - Customer last (family) name. Must be paired with `firstName`. Required if `fullName` is empty.
+        + `titleBefore`: `Ing.` (string, optional, nullable) - Academical degree, in front of the name
+        + `titleAfter`: `CSc.` (string, optional, nullable) - Academical degree, behind name
+    + `fullName`: `Ing. John Newborn, Csc.` (string, required) - Customer full name, including academical degrees and salutation. Required only if `firstName` or `lastName` are empty.
 + `email`: `john.newborn@country.com` (string, required) - E-mail address of customer
 + `phone`: `+420123456789` (string, required) - Phone number with country code (including leading `+`)
 + `addresses` (array[Address], optional) - Addresses. All types are allowed.
-+ `tin`: `12333321` (string, optional) - Tax identification number (ICO)
-+ `vatin`: `CZ8402154456` (string, optional) - VAT identification number
++ `tin`: `12333321` (string, optional, nullable) - Tax identification number (ICO)
++ `vatin`: `CZ8402154456` (string, optional, nullable) - VAT identification number
 
 
 ## Error (object)
