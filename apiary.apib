@@ -23,8 +23,11 @@ This API allows partners to retrieve info about services available for eligible 
 3. Create a contract based on above offer of services.
 4. Provide required information for the contract.
 5. Activate the contract.
+
+__Optional steps__:
+
 6. Cancel the contract.
-7. Contract status information.
+7. Get contract status information.
 
 ## API Endpoints Description
 
@@ -127,7 +130,7 @@ Update selected contract.
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractUpdateResponse)
 
-
+<!--
 ### Add Contract Item [POST]
 Update selected contract item
 
@@ -136,7 +139,7 @@ Update selected contract item
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractUpdateResponse)
-
+-->
 
 ## Contract Item Operations [/v1/contracts/{contract_id}/item/{item_id}]
 
@@ -202,14 +205,15 @@ Cancel selected contract.
 + `expiresIn`: 7200 (number, required) - Remaining token validity time (in seconds)
 
 
+
 ## RequestServicesRequest (object)
 ### Properties
-+ `items` (array[ServiceRequestProduct], required) - Array of products you want to receive possible services for.
++ `items` (array[ServiceRequestProduct], required) - Array of products you want to receive possible services for. If you order multiple pieces of the same product, it is expected each piece will be represented by separate item, hence there is no quantity field.
 
 ## RequestServicesResponse (object)
 ### Properties
 + `offersId`: `UUID-comes-here` (string, required) - Id of the offers
-+ `items` (array[ServiceResponseGroup], required) - array of items with applicable services
++ `items` (array[ServiceResponseProduct], required) - description
 
 
 
@@ -230,6 +234,7 @@ Returns created `Contract`, errors otherwise.
 ### Properties
 
 
+
 ## ContractUpdateRequest (UpdateContract)
 Update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
 ### Properties
@@ -238,13 +243,12 @@ Update selected `Contract`. Only allows updating certain contract properties. in
 ### Properties
 
 
+
 ## ContractItemAddRequest (ContractRequestItem)
 ### Properties
 
-
 ## ContractItemUpdateRequest (ContractRequestItem)
 ### Properties
-
 
 ## ContractActivateRequest (object)
 The contract has to be activated for us to be able to fullfill it.
@@ -252,7 +256,6 @@ The contract has to be activated for us to be able to fullfill it.
 
 ## ContractActivateResponse (ResponseContract)
 ### Properties
-
 
 ## ContractCancelRequest (object)
 A running `contract` can also be canceled under certain conditions (ie. in 14 days after goods delivery to customer).
@@ -301,19 +304,16 @@ Type of financial ammount
 
 ## ServiceRequestProduct (BaseProduct)
 ### Properties
-+ `unitPrice` (Amount, required) - Price per one piece. If empty, automatically considered that `unitPrice` is `totalPrice` / `quantity`.
-+ `unitVat` (VatAmount, required) - VAT amount per one piece. If empty, automatically considered that `unitVat` is `totalVat` / `quantity`.
-+ `productSerialNumber`: `64001000` (string, nullable) - Serial Number of product piece. May be required for `Contract` closing.
++ `unitPrice` (Amount, required) - Price per one piece.
++ `unitVat` (VatAmount, required) - VAT amount per one piece.
++ `productSerialNumber`: `64001000` (string, optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
 
 
 ## ServiceResponseProduct (ServiceRequestProduct)
 ### Properties
++ `productID`: `uniqueproductid` (string, required)
 + `productCategorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
-
-
-
-
-
++ `services` (array[ServiceResponseGroup]) - services available for the product piece
 
 ## ServiceResponseItem (object)
 Individual selectable service.
@@ -334,7 +334,7 @@ The information above means that multiple service groups are not only encouraged
 + `serviceGroupId`: 1 (number, required) - Unique Id of the group.
 + `serviceGroupName`: `ADP (Accidental Damage Protection) Insurance` (string, required) - Plain text name of options group, will be used for display.
 + `serviceGroupDescription`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) - Description of the group, to display to customers.
-+ `serviceGroupOptions` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning, this group is made of.
++ `serviceGroupOptions` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning this group is made of.
 + `serviceGroupPriority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
 + `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
 
@@ -360,10 +360,12 @@ This is a contract object that the API returns in resonse to most requests.
 + `contractItems` (array[ContractResponseItem], required) - Subject of the contract
 + `documents` (array[Document], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
+
 ## CreateContract (SimpleContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
 + `contractItems` (array[ContractRequestItem], required) - Subject of the contract
+
 
 ## UpdateContract (SimpleContract)
 This is a contract object that the API returns in resonse to most requests.
@@ -371,16 +373,9 @@ This is a contract object that the API returns in resonse to most requests.
 + `contractItems` (array[ContractRequestItem], required) - Subject of the contract
 
 
-## ContractRequestItem
+## ContractRequestItem (ServiceRequestProduct)
 ### Properties
-+ `itemName`: `Nikon F` (string, required) - Name of item
-+ One Of
-    + `itemCode`: `fasd-fasd` (string, required)
-    + `itemEAN`: 1234567891234 (number, required)
-<!-- Do we want to allow both? What will be required to identify the product? -->
-+ `itemSerialNumber`: `COM-456-456` (string, required)
-<!-- Should serial numbers be compulsory? What should be done in case of products, that don't have SN? -->
-+ `contractItemServices` (array[ContractItemService], required) - An array of Contract services for the item
++ `services` (array[ContractItemService], required) - An array of Contract services for the item
 
 
 ## ContractResponseItem (ContractRequestItem)
@@ -395,11 +390,9 @@ This is a contract object that the API returns in resonse to most requests.
 + `serviceGroupId`: 1 (number, required) - Id of the service group
 + `servicePrice` (ServiceAmount, required) - service price including type
 + `serviceDescription`: `this is a shor description of the service` (string, optional, nullable) - Human readable description of the service
-<!-- Should the description be contained here? I guess so, will make the reading of the contract much easier -->
 + `serviceActivatedDate`: `2018-08-03T13:22:5000+00:02` (string, nullable) - datetime of service option activation
 + `serviceCancelledDate`: `2017-08-03T13:22:5000+00:02` (string, nullable) - datetime of service cancellation
 + `serviceActiveUntilDate`: `2020-08-03T13:22:5000+00:02` (string, nullable) - datetime of service expiration (when the service is no longer valid)
-<!-- Should the services be activatable/cancellable individually? -->
 
 
 ## Address (object)
@@ -425,7 +418,6 @@ Address
 
 ## CustomerBase (object)
 Customer data
-
 ### Properties
 + One of
     + properties
@@ -451,7 +443,6 @@ Customer data
     + INFO - Information only, execution can continue without user interaction -->
 + attribute: `personalBirthNumber` (string, optional) - JSON path of request attribute that caused the error (if applicable)
 <!-- + ticketId: `UAT1:AMS:20160516-091658.450:45e4` (string, optional) - Internal ticket ID, used for error backtracking -->
-
 
 
 ## File (object)
@@ -480,9 +471,6 @@ Attached document (e.g. contract, invoice, credit note etc.)
 ## DocumentExtraData (object)
 ### Properties
 + `variableSymbol`: `1234567890` (string, optional, nullable) - variable symbol (internal for e-shop)
-
-
-
 
 
 ## Errors (object)
