@@ -282,10 +282,10 @@ The response is a `contract` as represented in our system or errors, if somethon
 <!-- We have to decide here if we want textual or code-based categories. Which one is more advanageous? -->    
 + `productQuantity`: 2 (number, required)
 + `productPricePerPiece` (PriceAmount, required) -<!-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. Also, it might be necessary for fullfillment - how would you pay for a product if you didn't know it's price? -->
-+ `productCondition`: `new` (enum, required)
++ `productCondition`: `NEW` (enum, required)
     + `NEW` - new product
     + `USED` - used product
-    + `UNPACKED` - like new product, possibly returned by customer in 14 day period after purchase
+    + `UNPACKED` - like new product, possibly returned by customer in 14 day period after purchase. Also new products with damaged packaging. 
     + `OTHER`
 
 
@@ -321,7 +321,7 @@ Price of service including pricing type
 
 ## SimpleContract (object)
 ### Properties
-+ `contractCustomer` (ContractCustomer, required) - Destionation customer of the services
++ `customer` (CustomerBase, required) - Destionation customer of the services
 <!-- Should the activation be per contract and per service? I would definitelly make it per service, enablest services with different lengths. the question is the contract...) -->
 
 ## BaseContract (SimpleContract)
@@ -372,22 +372,10 @@ This is a contract object that the API returns in resonse to most requests.
 + `servicePrice` (ServicePrice, required) - service price including type
 + `serviceDescription`: `this is a shor description of the service` (string, optional, nullable) - Human readable description of the service
 <!-- Should the description be contained here? I guess so, will make the reading of the contract much easier -->
-+ `serviceActivatedDate`: `2018-08-03 13:22:5000T+2` (string, nullable) - datetime of service option activation
-+ `serviceCancelledDate`: `2017-08-03 13:22:5000T+2` (string, nullable) - datetime of service cancellation
-+ `serviceActiveUntilDate`: `2020-08-03 13:22:5000T+2` (string, nullable) - datetime of service expiration (when the service is no longer valid)
++ `serviceActivatedDate`: `2018-08-03T13:22:5000+00:02` (string, nullable) - datetime of service option activation
++ `serviceCancelledDate`: `2017-08-03T13:22:5000+00:02` (string, nullable) - datetime of service cancellation
++ `serviceActiveUntilDate`: `2020-08-03T13:22:5000+00:02` (string, nullable) - datetime of service expiration (when the service is no longer valid)
 <!-- Should the services be activatable/cancellable individually? -->
-
-
-## ContractCustomerPerson
-### Properties
-+ `firstName`: `Lukáš` (string, required) - Customer first name
-+ `familyName`: `Říha` (string, required) - Customer family name
-
-
-## ContractCustomerCompany
-### Properties
-+ `companyName`: `Usertech Digital s.r.o.` (string, required) - Company name
-+ `companyICO`: 12345678 (number, required) - Company ICO, 8 digits
 
 
 ## Address (object)
@@ -410,12 +398,21 @@ Address
     + `DELIVERY` - Delivery address
     + `BILLING` - Billing address
 
-## ContractCustomer
+
+## CustomerBase (object)
+Customer data
+
 ### Properties
-+ `contractCustomerPerson` (ContractCustomerPerson, required) - Usage of this element signifies private services purchase
-+ `contractCustomerCompany` (ContractCustomerCompany, optional, nullable) - Usage of this element signifies a business services purchase
-+ `contractCustomerAddress` (Address, required) - Customer contact address
-<!-- Do we really need customer contract address or this can be handled via eshop? -->
++ `firstName`: `John` (string, optional) -  Customer first (given) name. Must be paired with `lastName`. Required if `fullName` is empty.
++ `lastName`: `Newborn` (string, optional) - Customer last (family) name. Must be paired with `firstName`. Required if `fullName` is empty.
++ `fullName`: `Ing. John Newborn, Csc.` (string, optional) - Customer full name, including academical degrees and salutation. Required only if `firstName` or `lastName` are empty.
++ `titleBefore`: `Ing.` (string, optional) - Academical degree, in front of the name
++ `titleAfter`: `CSc.` (string, optional) - Academical degree, behind name
++ `email`: `john.newborn@country.com` (string, required) - E-mail address of customer
++ `phone`: `+420123456789` (string, required) - Phone number with country code (including leading `+`)
++ `addresses` (array[Address], optional) - Addresses. All types are allowed.
++ `tin`: `12333321` (string, optional) - Tax identification number (ICO)
++ `vatin`: `CZ8402154456` (string, optional) - VAT identification number
 
 
 ## Error (object)
