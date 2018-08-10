@@ -203,14 +203,14 @@ Cancel selected contract.
 
 
 ## RequestServicesRequest (object)
-Customer consent for processing of personal data according to GDPR. `slug` uniquely defines scope of the consent and purpose of processing, `businessDate` is the datetime customer agreed to the processing of this particular piece of personal data for the purpose defined by `slug`.
 ### Properties
 + `items` (array[ServiceRequestProduct], required) - Array of products you want to receive possible services for.
 
 ## RequestServicesResponse (object)
 ### Properties
 + `offersId`: `UUID-comes-here` (string, required) - Id of the offers
-+ `offers` (array[ServiceResponseGroup], required)
++ `items`: 
+ (array[ServiceResponseGroup], required)
 
 
 
@@ -264,24 +264,35 @@ The response is a `contract` as represented in our system or errors, if somethon
 ### Properties
 
 
-## PriceAmount (object)
-### Properties
-+ `priceIncVat`: 750000 (number) - Price including two decimal numbers (750000 = 7500,-).
-+ `currency`: CZK (string, required) - Currenecy is required in absolute value prices.
 
 
-## ServiceRequestProduct (object)
+## Amount (object)
+Financial amount
 ### Properties
-+ `productName`: Nikon F (string, optional, nullable) - Product name
++ `amount`: 12590 (number, required) - Amount in minor units (12590 represents 125,90 CZK) [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
++ `currency`: `CZK` (string, required) - Amount currency. [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
+
+
+## VatAmount (Amount)
+Financial amount with VAT rate.
+### Properties
++ `vatRate`: 15 (number, required) - VAT rate as natural number (15 represents 15% rate)
+
+
+## ServiceAmount(VatAmount)
+Price of service including pricing type
+### Properties
++ `servicePriceType`: `ABSOLUTE` (enum, optional, nullable) - Type of service offer price
+    + `ABSOLUTE` -  Price of service offer is absolute
+    + `PERCENT` - Price of service offer is constructed as a fraction of `unitPrice` of product this service is covering.
+
+
+## BaseProduct (object)
+### Properties
++ `productName`: Nikon F (string, required) - Full product name
 + One Of
-    + `productEan`: 1123456789123 (number, optional, nullable) - GTIN (EAN13), 13 or 14 digits length
-    + `productCode`: NIKON-F-BLACK-1964 (string, optional, nullable) - Is this required at all?
-+ One Of
-    + `productCategoryText`: Camera, Still Picture, Analog, 35mm (string, required) -<!-- Do we require textual category or category code?-->
-    + `productCategoryCode`: 1944 (number, required) -<!-- Do we require textual category or category code? -->
-<!-- We have to decide here if we want textual or code-based categories. Which one is more advanageous? -->    
-+ `productQuantity`: 2 (number, required)
-+ `productPricePerPiece` (PriceAmount, required) -<!-- Price (and not from-to price) is required, since price interval may lead to getting either lower or higher service and service computation may depend on it. Also, it might be necessary for fullfillment - how would you pay for a product if you didn't know it's price? -->
+    + `productEan`: 1123456789123 (number, optional, nullable) - GTIN (EAN13), 13 or 14 digits length. May be used to improve product matching accuracy.
+    + `productCode`: `NIKON-F-BLACK-1964` (string, optional, nullable) - Optional product manufacturers code/SKU.  May be used to improve product matching accuracy.
 + `productCondition`: `NEW` (enum, required)
     + `NEW` - new product
     + `USED` - used product
@@ -289,13 +300,20 @@ The response is a `contract` as represented in our system or errors, if somethon
     + `OTHER`
 
 
-## ServicePrice (object)
-Price of service including pricing type
+## ServiceRequestProduct (BaseProduct)
 ### Properties
-+ `servicePriceType`: `absolute` (enum, required) - Type of offer price
-    + `ABSOLUTE` -  Price of offer is absolute
-    + `PERCENT` - Price of offer is constructed as a fraction of `Price` of product this service is covering.
-+ `servicePriceAmount`: 1250 (PriceAmount, required) - Price of this particular service offer
++ `unitPrice` (Amount, required) - Price per one piece. If empty, automatically considered that `unitPrice` is `totalPrice` / `quantity`.
++ `unitVat` (VatAmount, required) - VAT amount per one piece. If empty, automatically considered that `unitVat` is `totalVat` / `quantity`.
++ `productSerialNumber`: `64001000` (string, nullable) - Serial Number of product piece. May be required for `Contract` closing.
+
+
+## ServiceResponseProduct (ServiceRequestProduct)
+### Properties
++ `productCategorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
+
+
+
+
 
 
 ## ServiceResponseItem (object)
@@ -304,7 +322,7 @@ Price of service including pricing type
 + `serviceName`: `ADP (Accidental Damage Protection) Insurance` (string, required)
 + `serviceDescription`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `servicePriority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
-+ `servicePrice` (ServicePrice, required) - Price of service including type of price
++ `servicePrice` (ServiceAmount, required) - Price of service including type of price
 + `serviceStandalone`: true (boolean, required) - Is the service available stand-alone or only as a part of service package?
 
 
@@ -316,25 +334,28 @@ Price of service including pricing type
 + `serviceGroupOptions` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning, this group is made of.
 + `serviceGroupPriority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
 + `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
-+ `serviceGroupProducts`: [1, 2] (array[number], optional, nullable) - The ID of product this service offer applies to. Most of the time, this will contain only one product.
 
 
 ## SimpleContract (object)
 ### Properties
 + `customer` (CustomerBase, required) - Destionation customer of the services
-<!-- Should the activation be per contract and per service? I would definitelly make it per service, enablest services with different lengths. the question is the contract...) -->
+
 
 ## BaseContract (SimpleContract)
 ### Properties
-+ `contractActivation`: `2018-05-05 18:34.0002T+2` (string, optional, nullable) - Datetime of contract activation
-+ `contractCancellation`: `2018-12-31 05:11.1234T+1` (string, optional, nullable) - Datetime of contract cancellation
-<!-- Should the activation be per contract and per service? I would definitelly make it per service, enablest services with different lengths. the question is the contract...) -->
++ `contractActivationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
++ `contractCancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
++ `totalPrice` (Amount, optional) - Total order amount, including VAT
++ `totalVat` (array[VatAmount], optional) - Total VAT amounts split by their VAT rates
+
 
 ## ResponseContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
-+ `contractId`: kasjfkjůladsfkj-adf-12 (string, required) - Contract ID
++ `contractId`: `kasjfkjůladsfkj-adf-12` (string, required) - Contract ID
++ `contractPartnerId`: `fda-456123789` (string, optional, nullable) - Partnerđ contract Id
 + `contractItems` (array[ContractResponseItem], required) - Subject of the contract
++ `documents` (array[Document], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
 ## CreateContract (SimpleContract)
 This is a contract object that the API returns in resonse to most requests.
@@ -369,7 +390,7 @@ This is a contract object that the API returns in resonse to most requests.
 + `offerId`: `UUID-comes-here` (string, required) - Id of the original offer the contract is based upon. Enables creating one contract
 + `serviceId`: 1 (number, required) - Id of the service option
 + `serviceGroupId`: 1 (number, required) - Id of the service group
-+ `servicePrice` (ServicePrice, required) - service price including type
++ `servicePrice` (ServiceAmount, required) - service price including type
 + `serviceDescription`: `this is a shor description of the service` (string, optional, nullable) - Human readable description of the service
 <!-- Should the description be contained here? I guess so, will make the reading of the contract much easier -->
 + `serviceActivatedDate`: `2018-08-03T13:22:5000+00:02` (string, nullable) - datetime of service option activation
@@ -392,7 +413,7 @@ Address
 + `streetAddress`: `Letenská` (string, required) - Street/city part.
 + `streetNumber`: `22` (string, required) - Street number
 + `zip`: `140 00` (string, required) - Postal code
-+ `addressType` (enum, required) - Type of the address. Only some of the types are allowed in each context.
++ `addressType`: `PERMANENT` (enum, required) - Type of the address. Only some of the types are allowed in each context.
     + `PERMANENT` - Permanent residential address
     + `CONTACT` - Contact address
     + `DELIVERY` - Delivery address
@@ -425,6 +446,39 @@ Customer data
     + INFO - Information only, execution can continue without user interaction -->
 + attribute: `personalBirthNumber` (string, optional) - JSON path of request attribute that caused the error (if applicable)
 <!-- + ticketId: `UAT1:AMS:20160516-091658.450:45e4` (string, optional) - Internal ticket ID, used for error backtracking -->
+
+
+
+## File (object)
+Represents a single file.
+### Properties
++ `filename`: `invoice.pdf` (string, required) - File name.
++ One Of
+    + `content`: `RmlsZSBjb250ZW50cy4gwq9cXyjjg4QpXy/Crw==` (string, required) - File content (Base64 encoded, maximum size of encoded string is 500kB)
+    + `url`: `https://www.example.com/file?id=12345` (string, required) - File URL.
+
+
+## Document (object)
+Attached document (e.g. contract, invoice, credit note etc.)
+### Properties
++ `type`: `CONTRACT` (enum, required) - Type of the document
+    + `CONTRACT` - Full contract
+    + `INVOICE` - Invoice
+    + `PROFORMA_INVOICE` - Proforma invoice
+    + `CREDIT_NOTE` - Credit note
+    + `OTHER` - Other document type
++ `file` (File, required) - Attached file
++ `description`: `This is an invoice` (string, optional) - File description
++ `extraData` (DocumentExtraData, optional) - Additional data, if applicable
+
+
+## DocumentExtraData (object)
+### Properties
++ `variableSymbol`: `1234567890` (string, optional, nullable) - variable symbol (internal for e-shop)
+
+
+
+
 
 ## Errors (object)
 ### Properties
