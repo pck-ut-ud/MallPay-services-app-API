@@ -349,7 +349,7 @@ This is a contract object that the API returns in resonse to most requests.
 + `contractId`: `kasjfkjůladsfkj-adf-12` (string, required) - Contract ID
 + `contractPartnerId`: `fda-456123789` (string, optional, nullable) - Partnerđ contract Id
 + `contractItems` (array[ContractResponseItem], required) - Subject of the contract
-+ `documents` (array[Document], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
++ `documents` (array[ResponseDocument], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
 
 ## CreateContract (SimpleContract)
@@ -441,9 +441,20 @@ Customer data
 Represents a single file.
 ### Properties
 + `filename`: `invoice.pdf` (string, required) - File name.
+
+
+## RequestFile (File)
+Represents a single file in request.
+### Properties
 + One Of
     + `content`: `RmlsZSBjb250ZW50cy4gwq9cXyjjg4QpXy/Crw==` (string, required) - File content (Base64 encoded, maximum size of encoded string is 500kB)
     + `url`: `https://www.example.com/file?id=12345` (string, required) - File URL.
+
+
+## ResponseFile (File)
+Represents a single file in response.
+### Properties
++ `url`: `https://www.example.com/file?id=12345` (string, required) - File URL.
 
 
 ## Document (object)
@@ -455,8 +466,17 @@ Attached document (e.g. contract, invoice, credit note etc.)
     + `PROFORMA_INVOICE` - Proforma invoice
     + `CREDIT_NOTE` - Credit note
     + `OTHER` - Other document type
-+ `file` (File, required) - Attached file
 + `description`: `This is an invoice` (string, optional) - File description
+
+## RequestDocument (Document)
+Document in request
+### Properties
++ `file` (RequestFile, required)
+
+## ResponseDocument (Document)
+Document in request
+### Properties
++ `file` (ResponseFile, required)
 
 
 ## Errors (object)
