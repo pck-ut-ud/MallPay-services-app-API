@@ -19,7 +19,7 @@ This API allows partners to retrieve info about services available for eligible 
 ### General workflow
 
 1. Log in.
-2. Request services available for products specified.
+2. Request service offers available for products specified.
 3. Create a contract based on above offer of services.
 4. Provide required information for the contract.
 5. Activate the contract.
@@ -35,13 +35,13 @@ __Optional steps__:
 
 Enables the partner to log in. It is required to be able to use all the other endpoints.
 
-### Request Services
+### Request Service Offers
 
 Lets the partner to request available services for products. In order to do so, the partner has to provide information about products they require services for. Endpoint response contains services (and their possible combinations) for the provided products.
 
 ### Create Contract
 
-Based on an offer received from Request Services endpoint and their customer choices, enables a partner to create a contract for the services selected. If it was successfully created, response contains information about the created contract, errors explaining what went wrong otherwise.
+Based on an offer received from Request Service Offers endpoint and their customer choices, enables a partner to create a contract for the services selected. If it was successfully created, response contains information about the created contract, errors explaining what went wrong otherwise.
 
 ### Update Contract
 
@@ -77,9 +77,9 @@ Log in to be able to use other endpoints.
     + Attributes (AuthorizationResponse)
 
 
-## Request Services [/v1/services]
+## Request Service Offers [/v1/offers]
 
-### Request Available Services [GET]
+### Request Available Services [POST]
 Get info on services available for sent products.
 
 + Request (application/json; charset=utf-8)
@@ -296,7 +296,8 @@ Type of financial ammount
 ### Properties
 + `unitPrice` (Amount, required) - Price per one piece.
 + `unitVat` (VatAmount, required) - VAT amount per one piece.
-+ `productSerialNumber`: `64001000` (string, optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
++ `quantity`: 2 (number, required) - Number of products
++ `productsSerialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
 
 
 ## ServiceResponseProduct (ServiceRequestProduct)
@@ -333,6 +334,7 @@ The information above means that multiple service groups are not only encouraged
 ## SimpleContract (object)
 ### Properties
 + `customer` (CustomerBase, required) - Destionation customer of the services
++ `customerEshopId`: `123` (string, optional, nullable) - ID of customer in eshop
 
 
 ## BaseContract (SimpleContract)
@@ -382,8 +384,6 @@ This is a contract object that the API returns in resonse to most requests.
 + `servicePrice` (ServiceAmount, required) - service price including VAT and type
 + `servicePriceVat` (VatAmount, required) - service price VAT
 + `serviceDescription`: `this is a shor description of the service` (string, optional, nullable) - Human readable description of the service
-+ `serviceActivatedDate`: `2018-08-03T13:22:5000+00:02` (string, nullable) - datetime of service option activation
-+ `serviceCancelledDate`: `2017-08-03T13:22:5000+00:02` (string, nullable) - datetime of service cancellation
 + `serviceActiveUntilDate`: `2020-08-03T13:22:5000+00:02` (string, nullable) - datetime of service expiration (when the service is no longer valid)
 
 
