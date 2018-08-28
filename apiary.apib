@@ -172,7 +172,7 @@ Activate selected contract.
 
 ## Cancel Contract [/v1/contracts/{contract_id}/cancel]
 
-### Cancel Contract [PUT]
+### Cancel Contract [PATCH]
 Cancel selected contract.
 
 + Request (application/json; charset=utf-8)
@@ -259,20 +259,20 @@ The response is a `contract` as represented in our system or errors, if somethon
 
 
 ## Amount (object)
-Financial amount
+Financial amount, including VAT
 ### Properties
 + `amount`: 12590 (number, required) - Amount in minor units (12590 represents 125,90 CZK) [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
 + `currency`: `CZK` (string, required) - Amount currency. [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
 
 
 ## VatAmount (Amount)
-Financial amount with VAT rate.
+Financial amount with VAT rate. Usually just VAT part of Total price.
 ### Properties
 + `vatRate`: 15 (number, required) - VAT rate as natural number (15 represents 15% rate)
 
 
 ## ServiceAmount(Amount)
-Type of financial ammount
+Type of financial ammount.
 ### Properties
 + `servicePriceType`: `ABSOLUTE` (enum, optional, nullable) - Type of service offer price
     + `ABSOLUTE` -  Price of service offer is absolute
@@ -294,7 +294,7 @@ Type of financial ammount
 
 ## ServiceRequestProduct (BaseProduct)
 ### Properties
-+ `unitPrice` (Amount, required) - Price per one piece.
++ `unitPrice` (Amount, required) - Price per one piece, including VAT.
 + `unitVat` (VatAmount, required) - VAT amount per one piece.
 + `quantity`: 2 (number, required) - Number of products
 + `productsSerialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
@@ -313,7 +313,7 @@ Individual selectable service.
 + `serviceName`: `ADP (Accidental Damage Protection) 1 year` (string, required)
 + `serviceDescription`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `servicePriority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
-+ `servicePrice` (ServiceAmount, required) - Price of service including VAT and possibly type of price
++ `servicePrice` (ServiceAmount, required) - Price of service including VAT and possibly type of price.
 + `servicePriceVat` (VatAmount, required) - Price of service including VAT and possibly type of price
 + `serviceStandalone`: true (boolean, required) - If service is marked as `standalone`, it is __not__ mutually exclusive with other services within the service group and may be selected individually, much like HTML checkbox. This allows for grouping of services that are not exclusive to each other.
 
@@ -380,10 +380,6 @@ This is a contract object that the API returns in resonse to most requests.
 ### Properties
 + `offerId`: `UUID-comes-here` (string, required) - Id of the original offer the contract is based upon. Enables creating one contract
 + `serviceId`: 1 (number, required) - Id of the service option
-+ `serviceGroupId`: 1 (number, required) - Id of the service group
-+ `servicePrice` (ServiceAmount, required) - service price including VAT and type
-+ `servicePriceVat` (VatAmount, required) - service price VAT
-+ `serviceDescription`: `this is a shor description of the service` (string, optional, nullable) - Human readable description of the service
 + `serviceActiveUntilDate`: `2020-08-03T13:22:5000+00:02` (string, nullable) - datetime of service expiration (when the service is no longer valid)
 
 
