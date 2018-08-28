@@ -130,16 +130,6 @@ Update selected contract.
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractUpdateResponse)
 
-<!--
-### Add Contract Item [POST]
-Update selected contract item
-
-+ Request (application/json; charset=utf-8)
-    + Attributes (ContractItemAddRequest)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractUpdateResponse)
--->
 
 ## Contract Item Operations [/v1/contracts/{contract_id}/item/{item_id}]
 
@@ -281,7 +271,7 @@ Financial amount with VAT rate.
 + `vatRate`: 15 (number, required) - VAT rate as natural number (15 represents 15% rate)
 
 
-## ServiceAmount(VatAmount)
+## ServiceAmount(Amount)
 Type of financial ammount
 ### Properties
 + `servicePriceType`: `ABSOLUTE` (enum, optional, nullable) - Type of service offer price
@@ -323,6 +313,7 @@ Individual selectable service.
 + `serviceDescription`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `servicePriority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
 + `servicePrice` (ServiceAmount, required) - Price of service including VAT and possibly type of price
++ `servicePriceVat` (VatAmount, required) - Price of service including VAT and possibly type of price
 + `serviceStandalone`: true (boolean, required) - If service is marked as `standalone`, it is __not__ mutually exclusive with other services within the service group and may be selected individually, much like HTML checkbox. This allows for grouping of services that are not exclusive to each other.
 
 
@@ -388,7 +379,8 @@ This is a contract object that the API returns in resonse to most requests.
 + `offerId`: `UUID-comes-here` (string, required) - Id of the original offer the contract is based upon. Enables creating one contract
 + `serviceId`: 1 (number, required) - Id of the service option
 + `serviceGroupId`: 1 (number, required) - Id of the service group
-+ `servicePrice` (ServiceAmount, required) - service price including type
++ `servicePrice` (ServiceAmount, required) - service price including VAT and type
++ `servicePriceVat` (VatAmount, required) - service price VAT
 + `serviceDescription`: `this is a shor description of the service` (string, optional, nullable) - Human readable description of the service
 + `serviceActivatedDate`: `2018-08-03T13:22:5000+00:02` (string, nullable) - datetime of service option activation
 + `serviceCancelledDate`: `2017-08-03T13:22:5000+00:02` (string, nullable) - datetime of service cancellation
@@ -465,12 +457,6 @@ Attached document (e.g. contract, invoice, credit note etc.)
     + `OTHER` - Other document type
 + `file` (File, required) - Attached file
 + `description`: `This is an invoice` (string, optional) - File description
-+ `extraData` (DocumentExtraData, optional) - Additional data, if applicable
-
-
-## DocumentExtraData (object)
-### Properties
-+ `variableSymbol`: `1234567890` (string, optional, nullable) - variable symbol (internal for e-shop)
 
 
 ## Errors (object)
