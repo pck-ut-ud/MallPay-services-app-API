@@ -274,7 +274,7 @@ Financial amount with VAT rate. Usually just VAT part of Total price.
 ## ServiceAmount(Amount)
 Type of financial ammount.
 ### Properties
-+ `servicePriceType`: `ABSOLUTE` (enum, optional, nullable) - Type of service offer price
++ `priceType`: `ABSOLUTE` (enum, optional, nullable) - Type of service offer price
     + `ABSOLUTE` -  Price of service offer is absolute
     + `PERCENT` - Price of service offer is constructed as a fraction of `unitPrice` of product this service is covering.
 
@@ -302,20 +302,20 @@ Type of financial ammount.
 
 ## ServiceResponseProduct (ServiceRequestProduct)
 ### Properties
-+ `productID`: `uniqueproductid` (string, required)
-+ `productCategorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
++ `id`: `uniqueproductid` (string, required)
++ `categorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
 + `services` (array[ServiceResponseGroup]) - services available for the product piece
 
 ## ServiceResponseItem (object)
 Individual selectable service.
 ### Properties
-+ `serviceId`: 1 (number, required) - Unique Id of the service
-+ `serviceName`: `ADP (Accidental Damage Protection) 1 year` (string, required)
-+ `serviceDescription`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
-+ `servicePriority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
-+ `servicePrice` (ServiceAmount, required) - Price of service including VAT and possibly type of price.
-+ `servicePriceVat` (VatAmount, required) - Price of service including VAT and possibly type of price
-+ `serviceStandalone`: true (boolean, required) - If service is marked as `standalone`, it is __not__ mutually exclusive with other services within the service group and may be selected individually, much like HTML checkbox. This allows for grouping of services that are not exclusive to each other.
++ `id`: 1 (number, required) - Unique Id of the service
++ `name`: `ADP (Accidental Damage Protection) 1 year` (string, required)
++ `description`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
++ `priority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
++ `price` (ServiceAmount, required) - Price of service including VAT and possibly type of price.
++ `priceVat` (VatAmount, required) - Price of service including VAT and possibly type of price
++ `standalone`: true (boolean, required) - If service is marked as `standalone`, it is __not__ mutually exclusive with other services within the service group and may be selected individually, much like HTML checkbox. This allows for grouping of services that are not exclusive to each other.
 
 
 ## ServiceResponseGroup (object)
@@ -323,12 +323,12 @@ A grouping (for example by type or length) of individual services the customer m
 Unless the individual service is marked as `standalone`, it is assumed that the services within `serviceGroupOptions` mutually exclude each other, much like HTML radio button.
 The information above means that multiple service groups are not only encouraged, but may be required.
 ### Properties
-+ `serviceGroupId`: 1 (number, required) - Unique Id of the group.
-+ `serviceGroupName`: `ADP (Accidental Damage Protection) Insurance` (string, required) - Plain text name of options group, will be used for display.
-+ `serviceGroupDescription`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) - Description of the group, to display to customers.
-+ `serviceGroupOptions` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning this group is made of.
-+ `serviceGroupPriority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
-+ `serviceGroupExcludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
++ `id`: 1 (number, required) - Unique Id of the group.
++ `name`: `ADP (Accidental Damage Protection) Insurance` (string, required) - Plain text name of options group, will be used for display.
++ `description`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) - Description of the group, to display to customers.
++ `options` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning this group is made of.
++ `priority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
++ `excludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
 
 
 ## SimpleContract (object)
@@ -339,8 +339,8 @@ The information above means that multiple service groups are not only encouraged
 
 ## BaseContract (SimpleContract)
 ### Properties
-+ `contractActivationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
-+ `contractCancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
++ `activationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
++ `cancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
 + `totalPrice` (Amount, optional) - Total order amount, including VAT
 + `totalVat` (array[VatAmount], optional) - Total VAT amounts split by their VAT rates
 
@@ -348,9 +348,9 @@ The information above means that multiple service groups are not only encouraged
 ## ResponseContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
-+ `contractId`: `kasjfkjůladsfkj-adf-12` (string, required) - Contract ID
-+ `contractPartnerId`: `fda-456123789` (string, optional, nullable) - Partnerđ contract Id
-+ `contractItems` (array[ContractResponseItem], required) - Subject of the contract
++ `id`: `kasjfkjůladsfkj-adf-12` (string, required) - Contract ID
++ `partnerId`: `fda-456123789` (string, optional, nullable) - Partnerđ contract Id
++ `items` (array[ContractResponseItem], required) - Subject of the contract
 + `documents` (array[ResponseDocument], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
 
