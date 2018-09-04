@@ -172,10 +172,11 @@ Activate selected contract.
 
 ## Cancel Contract [/v1/contracts/{contract_id}/cancel]
 
-### Cancel Contract [PATCH]
+### Cancel Contract [POST]
 Cancel selected contract.
 
 + Request (application/json; charset=utf-8)
+    + Attributes (ContractCancelRequest)
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractCancelResponse)
@@ -217,7 +218,7 @@ Returns created `Contract`, errors otherwise.
 
 
 
-## ContractStatusRequest (object)
+## ContractDetailRequest (object)
 ### Properties
 
 ## ContractStatusResponse (ResponseContract)
@@ -231,7 +232,6 @@ Update selected `Contract`. Only allows updating certain contract properties. in
 
 ## ContractUpdateResponse (ResponseContract)
 ### Properties
-
 
 
 ## ContractItemAddRequest (ContractRequestItem)
@@ -250,6 +250,7 @@ The contract has to be activated for us to be able to fullfill it.
 ## ContractCancelRequest (object)
 A running `contract` can also be canceled under certain conditions (ie. in 14 days after goods delivery to customer).
 ### Properties
++ cancellationReason: `zákazník vrátil zboží ve 14 dnech` (string, required) - Reason for the cancellation of the contract
 
 ## ContractCancelResponse (ResponseContract)
 The response is a `contract` as represented in our system or errors, if somethong went wrong.
@@ -341,6 +342,7 @@ The information above means that multiple service groups are not only encouraged
 ### Properties
 + `activationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
 + `cancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
++ `cancellationReason`: `zákazník vrátil zboží ve 14 dnech` (string, optional, nullable) - Reason of the contract cancellation
 + `totalPrice` (Amount, optional) - Total order amount, including VAT
 + `totalVat` (array[VatAmount], optional) - Total VAT amounts split by their VAT rates
 
