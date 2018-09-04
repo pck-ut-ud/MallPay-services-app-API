@@ -131,16 +131,6 @@ Update selected contract.
     + Attributes (ContractUpdateResponse)
 
 
-## Activate Contract [/v1/contracts/{contract_id}/activate]
-
-### Activate Contract [PUT]
-Activate selected contract.
-
-+ Request (application/json; charset=utf-8)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractActivateResponse)
-
 
 # Data Structures
 
@@ -185,26 +175,13 @@ Returns created `Contract`, errors otherwise.
 
 
 
-## ContractUpdateRequest (UpdateContract)
+## ContractUpdateRequest (ResponseContract)
 Update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
 ### Properties
 
 ## ContractUpdateResponse (ResponseContract)
 ### Properties
 
-
-## ContractItemAddRequest (ContractRequestItem)
-### Properties
-
-## ContractItemUpdateRequest (ContractRequestItem)
-### Properties
-
-## ContractActivateRequest (object)
-The contract has to be activated for us to be able to fullfill it.
-### Properties
-
-## ContractActivateResponse (ResponseContract)
-### Properties
 
 
 ## Amount (object)
@@ -246,14 +223,21 @@ Type of financial ammount.
 + `unitPrice` (Amount, required) - Price per one piece, including VAT.
 + `unitVat` (VatAmount, required) - VAT amount per one piece.
 + `quantity`: 2 (number, required) - Number of products
-+ `se erialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
++ `serialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
 
 
-## ServiceResponseProduct (ServiceRequestProduct)
-### Properties
+## ProductDetail (ServiceRequestProduct)
 + `id`: `uniqueproductid` (string, required)
 + `categorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
+
+
+## ServiceResponseProduct (ProductDetail)
+### Properties
 + `services` (array[ServiceResponseGroup]) - services available for the product piece
+
+## ContractCreateProduct (object)
+### Properties
++ `id`: `uniqueproductid` (string, required) - Id of product returned in request for services
 
 ## ServiceResponseItem (object)
 Individual selectable service.
@@ -323,14 +307,13 @@ This is a contract object that the API returns in resonse to most requests.
 + `contractItems` (array[ContractRequestItem], required) - Subject of the contract
 
 
-## ContractRequestItem (ServiceRequestProduct)
+## ContractRequestItem (ContractCreateProduct)
 ### Properties
 + `services` (array[ContractItemService], required) - An array of Contract services for the item
 
-
-## ContractResponseItem (ContractRequestItem)
+## ContractResponseItem (ProductDetail)
 ### Properties
-+ `itemId`: `235AF` (string, required) - ID of item in contract
++ `services` (array[ContractItemService], required) - An array of Contract services for the item
 
 
 ## ContractItemService
