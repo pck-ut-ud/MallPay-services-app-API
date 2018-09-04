@@ -27,7 +27,7 @@ This API allows partners to retrieve info about services available for eligible 
 __Optional steps__:
 
 6. Cancel the contract.
-7. Get contract status information.
+7. Get contract detail information.
 
 ## API Endpoints Description
 
@@ -60,7 +60,7 @@ Subject to general terms and conditions, a contract can also be canceled. Respon
 
 **NOTE:** Cancel Contract also sends contract cancellation information message to customers e-mail address.
 
-### Contract Status
+### Contract Detail
 
 Provides information about created contracts and their status. 
 
@@ -103,8 +103,8 @@ Create a contract based on available services offering.
 
 ## Contract Operations [/v1/contracts/{contract_id}]
 
-### Contract Status [GET]
-Get status of selected Contract.
+### Contract Detail [GET]
+Get detail - status of selected Contract.
 
 + Request (application/json; charset=utf-8)
 
