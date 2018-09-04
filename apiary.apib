@@ -281,11 +281,11 @@ Type of financial ammount.
 
 ## BaseProduct (object)
 ### Properties
-+ `productName`: Nikon F (string, required) - Full product name
++ `name`: Nikon F (string, required) - Full product name
 + One Of
-    + `productEan`: 1123456789123 (number, optional, nullable) - GTIN (EAN13), 13 or 14 digits length. May be used to improve product matching accuracy.
-    + `productCode`: `NIKON-F-BLACK-1964` (string, optional, nullable) - Optional product manufacturers code/SKU.  May be used to improve product matching accuracy.
-+ `productCondition`: `NEW` (enum, required)
+    + `ean`: 1123456789123 (number, optional, nullable) - GTIN (EAN13), 13 or 14 digits length. May be used to improve product matching accuracy.
+    + `code`: `NIKON-F-BLACK-1964` (string, optional, nullable) - Optional product manufacturers code/SKU.  May be used to improve product matching accuracy.
++ `condition`: `NEW` (enum, required)
     + `NEW` - new product
     + `USED` - used product
     + `UNPACKED` - like new product, possibly returned by customer in 14 day period after purchase. Also new products with damaged packaging. 
@@ -297,7 +297,7 @@ Type of financial ammount.
 + `unitPrice` (Amount, required) - Price per one piece, including VAT.
 + `unitVat` (VatAmount, required) - VAT amount per one piece.
 + `quantity`: 2 (number, required) - Number of products
-+ `productsSerialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
++ `se erialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
 
 
 ## ServiceResponseProduct (ServiceRequestProduct)
