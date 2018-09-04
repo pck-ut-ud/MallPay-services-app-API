@@ -175,7 +175,7 @@ Returns created `Contract`, errors otherwise.
 
 
 
-## ContractUpdateRequest (ResponseContract)
+## ContractUpdateRequest (UpdateContract)
 Update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
 ### Properties
 
@@ -301,15 +301,21 @@ This is a contract object that the API returns in resonse to most requests.
 + `contractItems` (array[ContractRequestItem], required) - Subject of the contract
 
 
-## UpdateContract (SimpleContract)
+## UpdateContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
-+ `contractItems` (array[ContractRequestItem], required) - Subject of the contract
++ `contractItems` (array[ContractUpdateItem], required) - Subject of the contract
 
 
 ## ContractRequestItem (ContractCreateProduct)
 ### Properties
 + `services` (array[ContractItemService], required) - An array of Contract services for the item
+
+
+## ContractUpdateItem (ContractRequestItem)
+### Properties
++ `serialNumbers`: `ser-num-123`, `ser-num-456` (array[string], optional, nullable) - serial numbers
+
 
 ## ContractResponseItem (ProductDetail)
 ### Properties
