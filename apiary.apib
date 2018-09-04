@@ -56,7 +56,7 @@ In order for us to be able to fulfill any contract, the contract has to be activ
 
 ### Cancel Contract
 
-Subject to general terms and conditions, a contract can also be canceled. Response contains info if the contract was successfully canceled. If it was not, response contains information why it was not canceled.
+Subject to general terms and conditions, a contract can also be canceled. Response contains contract detail or errors, if something went wrong.
 
 **NOTE:** Cancel Contract also sends contract cancellation information message to customers e-mail address.
 
@@ -170,19 +170,6 @@ Activate selected contract.
     + Attributes (ContractActivateResponse)
 
 
-## Cancel Contract [/v1/contracts/{contract_id}/cancel]
-
-### Cancel Contract [POST]
-Cancel selected contract.
-
-+ Request (application/json; charset=utf-8)
-    + Attributes (ContractCancelRequest)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractCancelResponse)
-
-
-
 # Data Structures
 
 ## AuthorizationRequest (object)
@@ -246,17 +233,6 @@ The contract has to be activated for us to be able to fullfill it.
 
 ## ContractActivateResponse (ResponseContract)
 ### Properties
-
-## ContractCancelRequest (object)
-A running `contract` can also be canceled under certain conditions (ie. in 14 days after goods delivery to customer).
-### Properties
-+ cancellationReason: `zákazník vrátil zboží ve 14 dnech` (string, required) - Reason for the cancellation of the contract
-
-## ContractCancelResponse (ResponseContract)
-The response is a `contract` as represented in our system or errors, if somethong went wrong.
-### Properties
-
-
 
 
 ## Amount (object)
@@ -342,7 +318,14 @@ The information above means that multiple service groups are not only encouraged
 ### Properties
 + `activationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
 + `cancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
-+ `cancellationReason`: `zákazník vrátil zboží ve 14 dnech` (string, optional, nullable) - Reason of the contract cancellation
++ `cancellationReason`: `CANCELLED_BY_ERP` (enum, optional, nullable) - reason for contract cancellation
+    + CANCELLED_BY_ERP
+    + CANCELLED_CUSTOM_REASON
+    + CANCELLED_GOODS_RETURNED
+    + CANCELLED_IN_14_DAYS
+    + CANCELLED_NOT_PAID
+    + CANCELLED_UNFINISHED
++ `note`: `libovolná poznámka ke contactu a jeho zrušení` (string, optional, nullable) - Reason of the contract cancellation
 + `totalPrice` (Amount, optional) - Total order amount, including VAT
 + `totalVat` (array[VatAmount], optional) - Total VAT amounts split by their VAT rates
 
