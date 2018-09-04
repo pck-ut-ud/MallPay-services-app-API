@@ -19,7 +19,7 @@ This API allows partners to retrieve info about services available for eligible 
 ### General workflow
 
 1. Log in.
-2. Request service offers available for products specified.
+2. Create offer - request service offers available for products specified.
 3. Create a contract based on above offer of services.
 4. Provide required information for the contract.
 5. Activate the contract.
@@ -35,13 +35,13 @@ __Optional steps__:
 
 Enables the partner to log in. It is required to be able to use all the other endpoints.
 
-### Request Service Offers
+### Create Offer
 
 Lets the partner to request available services for products. In order to do so, the partner has to provide information about products they require services for. Endpoint response contains services (and their possible combinations) for the provided products.
 
 ### Create Contract
 
-Based on an offer received from Request Service Offers endpoint and their customer choices, enables a partner to create a contract for the services selected. If it was successfully created, response contains information about the created contract, errors explaining what went wrong otherwise.
+Based on an offer received from Create Offer endpoint and their customer choices, enables a partner to create a contract for the services selected. If it was successfully created, response contains information about the created contract, errors explaining what went wrong otherwise.
 
 ### Update Contract
 
@@ -77,7 +77,7 @@ Log in to be able to use other endpoints.
     + Attributes (AuthorizationResponse)
 
 
-## Request Service Offers [/v1/offers]
+## Create Offer [/v1/offers]
 
 ### Request Available Services [POST]
 Get info on services available for sent products.
