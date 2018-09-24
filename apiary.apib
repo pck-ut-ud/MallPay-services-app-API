@@ -267,6 +267,17 @@ The information above means that multiple service groups are not only encouraged
 ## SimpleContract (object)
 ### Properties
 + `customer` (CustomerBase, required) - Destionation customer of the services
++ `orderDetail` (EshopOrderDetail, required) - Detail of the order from eshop
+
+
+##EshopOrderDetail (object)
+### Properties
++ `partnerName`: `Mall` (string, required) - Name of the e-Shop
++ `Id`: `456789123` (string, required) - Order number
++ `VariableSymbol`: `456789123` (string, optional, nullable) - VariableSymbol ot the order
++ `dueDate`: `2018-09-24` (string, required) - Due date of the order
++ `invoicingDate`: `2018-08-24` (string, required) - Date the order was invoiced
++ `paymentDate`: `2018-09-22` (string, required) - Date the order was payed
 
 
 ## BaseContract (SimpleContract)
@@ -289,7 +300,7 @@ The information above means that multiple service groups are not only encouraged
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
 + `id`: `kasjfkjůladsfkj-adf-12` (string, required) - Contract ID
-+ `partnerId`: `fda-456123789` (string, optional, nullable) - Partnerđ contract Id
++ `partnerId`: `fda-456123789` (string, optional, nullable) - Partner contract Id
 + `items` (array[ContractResponseItem], required) - Subject of the contract
 + `documents` (array[ResponseDocument], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
