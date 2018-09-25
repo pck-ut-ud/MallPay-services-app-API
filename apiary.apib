@@ -77,7 +77,7 @@ Log in to be able to use other endpoints.
     + Attributes (AuthorizationResponse)
 
 
-## Create Offer [/v1/offers]
+## Create Offer [/v1/offer]
 
 ### Request Available Services [POST]
 Get info on services available for sent products.
@@ -89,7 +89,7 @@ Get info on services available for sent products.
     + Attributes (RequestServicesResponse)
 
 
-## Create Contract [/v1/contracts]
+## Create Contract [/v1/contract]
 
 ### Create Contract [POST]
 Create a contract based on available services offering.
@@ -101,7 +101,7 @@ Create a contract based on available services offering.
     + Attributes (ContractCreateResponse)
 
 
-## Contract Operations [/v1/contracts/{contract_id}]
+## Contract Operations [/v1/contract/{contract_id}]
 
 ### Contract Detail [GET]
 Get detail - status of selected Contract.
@@ -152,7 +152,7 @@ Update selected contract.
 
 ## RequestServicesResponse (object)
 ### Properties
-+ `offersId`: `UUID-comes-here` (string, required) - Id of the offers
++ `offerId`: `UUID-comes-here` (string, required) - Id of the offers
 + `items` (array[ServiceResponseProduct], required) - description
 
 
