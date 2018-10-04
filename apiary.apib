@@ -220,6 +220,8 @@ Type of financial ammount.
 
 ## ServiceRequestProduct (BaseProduct)
 ### Properties
++ `totalPrice` (Amount, optional) - Total price for all items
++ `totalVat` (VatAmount, optional) - Total VAT for all items
 + `unitPrice` (Amount, required) - Price per one piece, including VAT.
 + `unitVat` (VatAmount, required) - VAT amount per one piece.
 + `quantity`: 2 (number, required) - Number of products
@@ -243,6 +245,7 @@ Type of financial ammount.
 Individual selectable service.
 ### Properties
 + `id`: 1 (number, required) - Unique Id of the service
++ `slug`: `option-slug` (string, required) - Unique slug of option
 + `name`: `ADP (Accidental Damage Protection) 1 year` (string, required)
 + `description`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `priority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
@@ -257,6 +260,7 @@ Unless the individual service is marked as `standalone`, it is assumed that the 
 The information above means that multiple service groups are not only encouraged, but may be required.
 ### Properties
 + `id`: 1 (number, required) - Unique Id of the group.
++ `slug`: `adp-goup-slug` (string, required) - Slug of the category name
 + `name`: `ADP (Accidental Damage Protection) Insurance` (string, required) - Plain text name of options group, will be used for display.
 + `description`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) - Description of the group, to display to customers.
 + `options` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning this group is made of.
@@ -267,24 +271,30 @@ The information above means that multiple service groups are not only encouraged
 ## SimpleContract (object)
 ### Properties
 + `customer` (CustomerBase, required) - Destionation customer of the services
-+ `orderDetail` (EshopOrderDetail, required) - Detail of the order from eshop
++ `order` (EshopOrderDetail, required) - Detail of the order from eshop
 
 
 ##EshopOrderDetail (object)
 ### Properties
-+ `partnerName`: `Mall` (string, required) - Name of the e-Shop
-+ `Id`: `456789123` (string, required) - Order number
-+ `VariableSymbol`: `456789123` (string, optional, nullable) - VariableSymbol ot the order
-+ `dueDate`: `2018-09-24` (string, required) - Due date of the order
-+ `invoicingDate`: `2018-08-24` (string, required) - Date the order was invoiced
-+ `paymentDate`: `2018-09-22` (string, required) - Date the order was payed
++ `merchantName`: `Mall` (string, required) - Name of the e-Shop
++ `number`: `456789123` (string, required) - Order number
++ `variableSymbols`: '123456789', '987654231' (array[string], optional, nullable) - VariableSymbols ot the order, must contain only numbers formatted as string.
++ `createdDate`: `2018-07-24` (string, required) - Date of order creation
++ `dueDate`: `2018-09-24` (string, optional, nullable) - Due date of the order
++ `invoicingDate`: `2018-08-24` (string, optional, nullable) - Date the order was invoiced
++ `paymentDate`: `2018-09-22` (string, optional, nullable) - Date the order was payed
+<!-- + `items` array[] -->
 
 
 ## BaseContract (SimpleContract)
 ### Properties
 + `activationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
 + `cancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
-+ `cancellationReason`: `CANCELLED_BY_ERP` (enum, optional, nullable) - reason for contract cancellation
++ `state`: `NEW` (enum, required) - state of the reason
+    + NEW
+    + ACTIVE
+    + CANCELLED
++ `stateReason`: `CANCELLED_BY_ERP` (enum, optional, nullable) - reason for contract cancellation
     + CANCELLED_BY_ERP
     + CANCELLED_CUSTOM_REASON
     + CANCELLED_GOODS_RETURNED
@@ -308,7 +318,7 @@ This is a contract object that the API returns in resonse to most requests.
 ## CreateContract (SimpleContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
-+ `contractItems` (array[ContractRequestItem], required) - Subject of the contract
++ `serviceOptionIds`: `1` (array[string], required) - Array of service IDs, only array with one item is allowed. The Id to put here is the service option Id.
 
 
 ## UpdateContract (BaseContract)
@@ -375,7 +385,7 @@ Customer data
 + `addresses` (array[Address], optional) - Addresses. All types are allowed.
 + `tin`: `12333321` (string, optional, nullable) - Tax identification number (ICO)
 + `vatin`: `CZ8402154456` (string, optional, nullable) - VAT identification number
-+ `customerEshopId`: `123` (string, optional, nullable) - ID of customer in eshop
++ `partnerCustomerId`: `123` (string, optional, nullable) - ID of customer in eshop
 
 
 ## Error (object)
