@@ -56,7 +56,7 @@ In order for us to be able to fulfill any contract, the contract has to be activ
 
 ### Cancel Contract
 
-Subject to general terms and conditions, a contract can also be canceled. Response contains info if the contract was successfully canceled. If it was not, response contains information why it was not canceled.
+Subject to general terms and conditions, a contract can also be canceled. Response contains contract detail or errors, if something went wrong.
 
 **NOTE:** Cancel Contract also sends contract cancellation information message to customers e-mail address.
 
@@ -77,7 +77,7 @@ Log in to be able to use other endpoints.
     + Attributes (AuthorizationResponse)
 
 
-## Create Offer [/v1/offers]
+## Create Offer [/v1/offer]
 
 ### Request Available Services [POST]
 Get info on services available for sent products.
@@ -89,7 +89,7 @@ Get info on services available for sent products.
     + Attributes (RequestServicesResponse)
 
 
-## Create Contract [/v1/contracts]
+## Create Contract [/v1/contract]
 
 ### Create Contract [POST]
 Create a contract based on available services offering.
@@ -101,7 +101,7 @@ Create a contract based on available services offering.
     + Attributes (ContractCreateResponse)
 
 
-## Contract Operations [/v1/contracts/{contract_id}]
+## Contract Operations [/v1/contract/{contract_id}]
 
 ### Contract Detail [GET]
 Get detail - status of selected Contract.
@@ -131,57 +131,6 @@ Update selected contract.
     + Attributes (ContractUpdateResponse)
 
 
-## Contract Item Operations [/v1/contracts/{contract_id}/item/{item_id}]
-
-### Get Contract Item [GET]
-Get selected item from contract
-+ Request (application/json; charset=utf-8)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractResponseItem)
-
-
-### Update Contract Item [PUT]
-Update selected contract item
-
-+ Request (application/json; charset=utf-8)
-    + Attributes (ContractItemUpdateRequest)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractUpdateResponse)
-
-### Delete Contract Item [DELETE]
-Update selected contract item
-
-+ Request (application/json; charset=utf-8)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractUpdateResponse)
-
-
-## Activate Contract [/v1/contracts/{contract_id}/activate]
-
-### Activate Contract [PUT]
-Activate selected contract.
-
-+ Request (application/json; charset=utf-8)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractActivateResponse)
-
-
-## Cancel Contract [/v1/contracts/{contract_id}/cancel]
-
-### Cancel Contract [POST]
-Cancel selected contract.
-
-+ Request (application/json; charset=utf-8)
-    + Attributes (ContractCancelRequest)
-
-+ Response 200 (application/json; charset=utf-8)
-    + Attributes (ContractCancelResponse)
-
-
 
 # Data Structures
 
@@ -203,7 +152,7 @@ Cancel selected contract.
 
 ## RequestServicesResponse (object)
 ### Properties
-+ `offersId`: `UUID-comes-here` (string, required) - Id of the offers
++ `offerId`: `UUID-comes-here` (string, required) - Id of the offers
 + `items` (array[ServiceResponseProduct], required) - description
 
 
@@ -232,30 +181,6 @@ Update selected `Contract`. Only allows updating certain contract properties. in
 
 ## ContractUpdateResponse (ResponseContract)
 ### Properties
-
-
-## ContractItemAddRequest (ContractRequestItem)
-### Properties
-
-## ContractItemUpdateRequest (ContractRequestItem)
-### Properties
-
-## ContractActivateRequest (object)
-The contract has to be activated for us to be able to fullfill it.
-### Properties
-
-## ContractActivateResponse (ResponseContract)
-### Properties
-
-## ContractCancelRequest (object)
-A running `contract` can also be canceled under certain conditions (ie. in 14 days after goods delivery to customer).
-### Properties
-+ cancellationReason: `zákazník vrátil zboží ve 14 dnech` (string, required) - Reason for the cancellation of the contract
-
-## ContractCancelResponse (ResponseContract)
-The response is a `contract` as represented in our system or errors, if somethong went wrong.
-### Properties
-
 
 
 
@@ -298,14 +223,21 @@ Type of financial ammount.
 + `unitPrice` (Amount, required) - Price per one piece, including VAT.
 + `unitVat` (VatAmount, required) - VAT amount per one piece.
 + `quantity`: 2 (number, required) - Number of products
-+ `se erialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
++ `serialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
 
 
-## ServiceResponseProduct (ServiceRequestProduct)
-### Properties
+## ProductDetail (ServiceRequestProduct)
 + `id`: `uniqueproductid` (string, required)
 + `categorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
+
+
+## ServiceResponseProduct (ProductDetail)
+### Properties
 + `services` (array[ServiceResponseGroup]) - services available for the product piece
+
+## ContractCreateProduct (object)
+### Properties
++ `id`: `uniqueproductid` (string, required) - Id of product returned in request for services
 
 ## ServiceResponseItem (object)
 Individual selectable service.
@@ -314,8 +246,8 @@ Individual selectable service.
 + `name`: `ADP (Accidental Damage Protection) 1 year` (string, required)
 + `description`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `priority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
-+ `price` (ServiceAmount, required) - Price of service including VAT and possibly type of price.
-+ `priceVat` (VatAmount, required) - Price of service including VAT and possibly type of price
++ `totalPrice` (ServiceAmount, required) - Price of service including VAT and possibly type of price.
++ `totalPriceVat` (VatAmount, required) - Price of service including VAT and possibly type of price
 + `standalone`: true (boolean, required) - If service is marked as `standalone`, it is __not__ mutually exclusive with other services within the service group and may be selected individually, much like HTML checkbox. This allows for grouping of services that are not exclusive to each other.
 
 
@@ -335,14 +267,31 @@ The information above means that multiple service groups are not only encouraged
 ## SimpleContract (object)
 ### Properties
 + `customer` (CustomerBase, required) - Destionation customer of the services
-+ `customerEshopId`: `123` (string, optional, nullable) - ID of customer in eshop
++ `orderDetail` (EshopOrderDetail, required) - Detail of the order from eshop
+
+
+##EshopOrderDetail (object)
+### Properties
++ `partnerName`: `Mall` (string, required) - Name of the e-Shop
++ `Id`: `456789123` (string, required) - Order number
++ `VariableSymbol`: `456789123` (string, optional, nullable) - VariableSymbol ot the order
++ `dueDate`: `2018-09-24` (string, required) - Due date of the order
++ `invoicingDate`: `2018-08-24` (string, required) - Date the order was invoiced
++ `paymentDate`: `2018-09-22` (string, required) - Date the order was payed
 
 
 ## BaseContract (SimpleContract)
 ### Properties
 + `activationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
 + `cancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
-+ `cancellationReason`: `zákazník vrátil zboží ve 14 dnech` (string, optional, nullable) - Reason of the contract cancellation
++ `cancellationReason`: `CANCELLED_BY_ERP` (enum, optional, nullable) - reason for contract cancellation
+    + CANCELLED_BY_ERP
+    + CANCELLED_CUSTOM_REASON
+    + CANCELLED_GOODS_RETURNED
+    + CANCELLED_IN_14_DAYS
+    + CANCELLED_NOT_PAID
+    + CANCELLED_UNFINISHED
++ `note`: `libovolná poznámka ke contactu a jeho zrušení` (string, optional, nullable) - Reason of the contract cancellation
 + `totalPrice` (Amount, optional) - Total order amount, including VAT
 + `totalVat` (array[VatAmount], optional) - Total VAT amounts split by their VAT rates
 
@@ -351,7 +300,7 @@ The information above means that multiple service groups are not only encouraged
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
 + `id`: `kasjfkjůladsfkj-adf-12` (string, required) - Contract ID
-+ `partnerId`: `fda-456123789` (string, optional, nullable) - Partnerđ contract Id
++ `partnerId`: `fda-456123789` (string, optional, nullable) - Partner contract Id
 + `items` (array[ContractResponseItem], required) - Subject of the contract
 + `documents` (array[ResponseDocument], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
@@ -362,20 +311,25 @@ This is a contract object that the API returns in resonse to most requests.
 + `contractItems` (array[ContractRequestItem], required) - Subject of the contract
 
 
-## UpdateContract (SimpleContract)
+## UpdateContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
-+ `contractItems` (array[ContractRequestItem], required) - Subject of the contract
++ `contractItems` (array[ContractUpdateItem], required) - Subject of the contract
 
 
-## ContractRequestItem (ServiceRequestProduct)
+## ContractRequestItem (ContractCreateProduct)
 ### Properties
 + `services` (array[ContractItemService], required) - An array of Contract services for the item
 
 
-## ContractResponseItem (ContractRequestItem)
+## ContractUpdateItem (ContractRequestItem)
 ### Properties
-+ `itemId`: `235AF` (string, required) - ID of item in contract
++ `serialNumbers`: `ser-num-123`, `ser-num-456` (array[string], optional, nullable) - serial numbers
+
+
+## ContractResponseItem (ProductDetail)
+### Properties
++ `services` (array[ContractItemService], required) - An array of Contract services for the item
 
 
 ## ContractItemService
@@ -421,6 +375,7 @@ Customer data
 + `addresses` (array[Address], optional) - Addresses. All types are allowed.
 + `tin`: `12333321` (string, optional, nullable) - Tax identification number (ICO)
 + `vatin`: `CZ8402154456` (string, optional, nullable) - VAT identification number
++ `customerEshopId`: `123` (string, optional, nullable) - ID of customer in eshop
 
 
 ## Error (object)
