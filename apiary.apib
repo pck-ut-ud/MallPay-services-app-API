@@ -283,7 +283,65 @@ The information above means that multiple service groups are not only encouraged
 + `dueDate`: `2018-09-24` (string, optional, nullable) - Due date of the order
 + `invoicingDate`: `2018-08-24` (string, optional, nullable) - Date the order was invoiced
 + `paymentDate`: `2018-09-22` (string, optional, nullable) - Date the order was payed
-<!-- + `items` array[] -->
++ `items` (array[OrderItem], optional, nullable) - order items
+
+
+##EshopOrderItem (object)
+### Properties
+
+
+## OrderItemBase (object)
+Order item base information, needed to identify order item
+
+### Properties
++ `code`: `EXC4677-1a` (string, required) - Internal code for item (internal to e-shop). Used to better identify the item for future changes
++ `ean`: 888462064002 (string, optional) - EAN code.
++ `name`: `iPhone 6s 32GB SpaceGray` (string, required) - Item name
++ `quantity`: 1 (number, optional) - Item quantity. If empty, considered as 1.
+
+## ApplicationRequestOrderItem (OrderItemBase)
+Order item information, needed to create an application.
+
+### Properties
++ `type` (enum, optional) - Item type
+    + `PHYSICAL`
+    + `DISCOUNT`
+    + `SHIPPING_FEE`
+    + `SALES_TAX`
+    + `DIGITAL`
+    + `GIFT_CARD`
+    + `STORE_CREDIT`
+    + `FEE`
+    + `INSURANCE`
++ `variant`: `32GB SpaceGray` (string, optional) - Item variant
++ `description`: `Mobile phone with 32GB of RAM` (string, optional)
++ `producer`: `Apple` (string, optional)
++ `categories`: `mobile phones`,`FullHD`, `64GB` (array[string], optional) - List of item categories
++ `unitPrice` (Amount, optional) - Price per one piece. If empty, automatically considered that `unitPrice` is `totalPrice` / `quantity`.
++ `unitVat` (VatAmount, optional) - VAT amount per one piece. If empty, automatically considered that `unitVat` is `totalVat` / `quantity`.
++ `totalPrice` (Amount, required) - Total price for all pieces, VAT inclusive
++ `totalVat` (VatAmount, required) - Total VAT amount for all pieces
++ `image` (File, optional) - Item image
++ `productUrl`: `https://www.example.com?itemId=10` (string, optional) - URL of the item in e-shop
+
+
+## OrderItem (ApplicationRequestOrderItem)
+Order item information.
+
+### Properties
++ `state` (enum, required) - Order state.
+    + `PROCESSING` - Oorder item delivery is being processed by merchant
+    + `SENT` - Items wa sent to customer
+    + `DELIVERED` - Order item was delivered to customer
+    + `RETURNED` - Order item was returned to merchant
+    + `CANCELLED` - Order item was cancelled
++ `sentDate`: `2017-01-10` (string, optional) - Date when item was sent. Only when the whole order was NOT sent at once.
++ `deliveryDate`: `2017-01-12` (string, optional) - Date when item was delivered. Only when the whole order was NOT sent at once.
++ `deliveryTrackingNumber`: `EX21121` (string, optional) - Tracking number for the item. Only when the whole order was NOT sent at once.
+
+
+
+
 
 
 ## BaseContract (SimpleContract)
