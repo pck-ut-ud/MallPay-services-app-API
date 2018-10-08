@@ -207,11 +207,14 @@ Type of financial ammount.
 + `quantity`: 2 (number, required) - Number of products
 + `serialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
 
-## ProductDetail (ServiceRequestProduct)
+## BaseProductDetail (ServiceRequestProduct)
++ `categorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
+
+## ProductDetail (BaseProductDetail)
 + `id`: `uniqueproductid` (string, required)
 + `categorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
 
-## ServiceResponseProduct (ProductDetail)
+## ServiceResponseProduct (BaseProductDetail)
 ### Properties
 + `services` (array[ServiceResponseGroup]) - services available for the product piece
 
