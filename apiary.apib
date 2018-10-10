@@ -64,7 +64,6 @@ Subject to general terms and conditions, a contract can also be canceled. Respon
 
 Provides information about created contracts and their status. 
 
-
 ## Authorize [/v1/partner/authorize]
 
 ### Request Authorization [POST]
@@ -75,7 +74,6 @@ Log in to be able to use other endpoints.
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (AuthorizationResponse)
-
 
 ## Create Offer [/v1/offer]
 
@@ -88,7 +86,6 @@ Get info on services available for sent products.
 + Response 200 (application/json; charset=utf-8)
     + Attributes (RequestServicesResponse)
 
-
 ## Create Contract [/v1/contract]
 
 ### Create Contract [POST]
@@ -99,7 +96,6 @@ Create a contract based on available services offering.
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractCreateResponse)
-
 
 ## Contract Operations [/v1/contract/{contract_id}]
 
@@ -120,16 +116,14 @@ Update selected contract.
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractUpdateResponse)
 
-
 ### Update Contract Partial [PATCH]
 Update selected contract.
 
 + Request (application/json; charset=utf-8)
-    + Attributes (ContractUpdateRequest)
+    + Attributes (ContractPartialUpdateRequest)
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes (ContractUpdateResponse)
-
 
 
 # Data Structures
@@ -144,8 +138,6 @@ Update selected contract.
 + `accessToken`: `secretaccessToken` (string, required) - Secret access token
 + `expiresIn`: 7200 (number, required) - Remaining token validity time (in seconds)
 
-
-
 ## RequestServicesRequest (object)
 ### Properties
 + `items` (array[ServiceRequestProduct], required) - Array of products you want to receive possible services for. If you order multiple pieces of the same product, it is expected each piece will be represented by separate item, hence there is no quantity field.
@@ -155,8 +147,6 @@ Update selected contract.
 + `offerId`: `UUID-comes-here` (string, required) - Id of the offers
 + `items` (array[ServiceResponseProduct], required) - description
 
-
-
 ## ContractCreateRequest (CreateContract)
 Request for creating contract.
 ### Properties
@@ -165,24 +155,21 @@ Request for creating contract.
 Returns created `Contract`, errors otherwise.
 ### Properties
 
-
-
 ## ContractDetailRequest (object)
 ### Properties
 
 ## ContractStatusResponse (ResponseContract)
 ### Properties
 
-
-
 ## ContractUpdateRequest (UpdateContract)
-Update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
+Fully update selected `Contract`. Only allows updating certain contract properties. in case you need to update other properties, which this method does not allow to change, you should request a new services offert and create a new contract.
 ### Properties
+
+## ContractPartialUpdateRequest (PartialUpdateContract)
+Partially update selected `Contract`.
 
 ## ContractUpdateResponse (ResponseContract)
 ### Properties
-
-
 
 ## Amount (object)
 Financial amount, including VAT
@@ -190,12 +177,10 @@ Financial amount, including VAT
 + `amount`: 12590 (number, required) - Amount in minor units (12590 represents 125,90 CZK) [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
 + `currency`: `CZK` (string, required) - Amount currency. [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
 
-
 ## VatAmount (Amount)
 Financial amount with VAT rate. Usually just VAT part of Total price.
 ### Properties
 + `vatRate`: 15 (number, required) - VAT rate as natural number (15 represents 15% rate)
-
 
 ## ServiceAmount(Amount)
 Type of financial ammount.
@@ -203,7 +188,6 @@ Type of financial ammount.
 + `priceType`: `ABSOLUTE` (enum, optional, nullable) - Type of service offer price
     + `ABSOLUTE` -  Price of service offer is absolute
     + `PERCENT` - Price of service offer is constructed as a fraction of `unitPrice` of product this service is covering.
-
 
 ## BaseProduct (object)
 ### Properties
@@ -217,21 +201,23 @@ Type of financial ammount.
     + `UNPACKED` - like new product, possibly returned by customer in 14 day period after purchase. Also new products with damaged packaging. 
     + `OTHER`
 
-
 ## ServiceRequestProduct (BaseProduct)
 ### Properties
++ `totalPrice` (Amount, optional) - Total price for all items
++ `totalVat` (VatAmount, optional) - Total VAT for all items
 + `unitPrice` (Amount, required) - Price per one piece, including VAT.
 + `unitVat` (VatAmount, required) - VAT amount per one piece.
 + `quantity`: 2 (number, required) - Number of products
 + `serialNumbers`: `64001000` (array[string], optional, nullable) - Serial Number of individual product piece. May be required for __Contract__ closing.
 
+## BaseProductDetail (ServiceRequestProduct)
++ `categorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
 
-## ProductDetail (ServiceRequestProduct)
+## ProductDetail (BaseProductDetail)
 + `id`: `uniqueproductid` (string, required)
 + `categorySlug`: `Camera-Still-Picture-Analog-35mm` (string, required) - Category slug, is used for product service selection.
 
-
-## ServiceResponseProduct (ProductDetail)
+## ServiceResponseProduct (BaseProductDetail)
 ### Properties
 + `services` (array[ServiceResponseGroup]) - services available for the product piece
 
@@ -242,59 +228,98 @@ Type of financial ammount.
 ## ServiceResponseItem (object)
 Individual selectable service.
 ### Properties
-+ `id`: 1 (number, required) - Unique Id of the service
++ `id`: `1` (string, required) - Unique Id of the service
++ `slug`: `option-slug` (string, required) - Unique slug of option
 + `name`: `ADP (Accidental Damage Protection) 1 year` (string, required)
 + `description`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `priority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
 + `totalPrice` (ServiceAmount, required) - Price of service including VAT and possibly type of price.
-+ `totalPriceVat` (VatAmount, required) - Price of service including VAT and possibly type of price
++ `totalVat` (VatAmount, required) - Total VAT for service.
 + `standalone`: true (boolean, required) - If service is marked as `standalone`, it is __not__ mutually exclusive with other services within the service group and may be selected individually, much like HTML checkbox. This allows for grouping of services that are not exclusive to each other.
-
 
 ## ServiceResponseGroup (object)
 A grouping (for example by type or length) of individual services the customer may select from. Individual services go into `serviceGroupOptions` array.
 Unless the individual service is marked as `standalone`, it is assumed that the services within `serviceGroupOptions` mutually exclude each other, much like HTML radio button.
 The information above means that multiple service groups are not only encouraged, but may be required.
 ### Properties
-+ `id`: 1 (number, required) - Unique Id of the group.
++ `id`: `1` (string, required) - Unique Id of the group.
++ `slug`: `adp-goup-slug` (string, required) - Slug of the category name
 + `name`: `ADP (Accidental Damage Protection) Insurance` (string, required) - Plain text name of options group, will be used for display.
 + `description`: `This is the description of the service group, which may, actually, be much longer than this` (string, optional, nullable) - Description of the group, to display to customers.
 + `options` (array[ServiceResponseItem], required) - A set of mutually exclusive options of (roughly) the same meaning this group is made of.
 + `priority`: 1 (number, optional, nullable) - Priority of the group as a whole, used for ordering of offers. Lower number means higher priority. Groups with same priority can be ordered at will (as long as they are ordered before/after any groups with lower/higher priority. If no priority is provided, may be ordered at will (after higher priority groups).
-+ `excludes`: [2, 3] (array[number], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
-
++ `excludes`: `2`, `3` (array[string], optional, nullable) - Ids of groups this group is mutually exclusive with. Customer cannot select offers from this group and **excludes** group at the same time.
 
 ## SimpleContract (object)
 ### Properties
 + `customer` (CustomerBase, required) - Destionation customer of the services
-+ `orderDetail` (EshopOrderDetail, required) - Detail of the order from eshop
-
++ `order` (EshopOrderDetail, required) - Detail of the order from eshop
 
 ##EshopOrderDetail (object)
 ### Properties
-+ `partnerName`: `Mall` (string, required) - Name of the e-Shop
-+ `Id`: `456789123` (string, required) - Order number
-+ `VariableSymbol`: `456789123` (string, optional, nullable) - VariableSymbol ot the order
-+ `dueDate`: `2018-09-24` (string, required) - Due date of the order
-+ `invoicingDate`: `2018-08-24` (string, required) - Date the order was invoiced
-+ `paymentDate`: `2018-09-22` (string, required) - Date the order was payed
++ `merchantName`: `Mall` (string, required) - Name of the e-Shop
++ `number`: `456789123` (string, required) - Order number
++ `variableSymbols`: '123456789', '987654231' (array[string], optional, nullable) - VariableSymbols ot the order, must contain only numbers formatted as string.
++ `createdDate`: `2018-07-24` (string, required) - Date of order creation
++ `dueDate`: `2018-09-24` (string, optional, nullable) - Due date of the order
++ `invoicingDate`: `2018-08-24` (string, optional, nullable) - Date the order was invoiced
++ `paymentDate`: `2018-09-22` (string, optional, nullable) - Date the order was payed
++ `items` (array[ApplicationRequestOrderItem], optional, nullable) - order items
 
+##EshopOrderItem (object)
+### Properties
+
+## OrderItemBase (object)
+Order item base information, needed to identify order item
+
+### Properties
++ `code`: `EXC4677-1a` (string, required) - Internal code for item (internal to e-shop). Used to better identify the item for future changes
++ `ean`: 888462064002 (string, optional) - EAN code.
++ `name`: `iPhone 6s 32GB SpaceGray` (string, required) - Item name
++ `quantity`: 1 (number, optional) - Item quantity. If empty, considered as 1.
+
+## ApplicationRequestOrderItem (OrderItemBase)
+Order item information, needed to create an application.
+
+### Properties
++ `type` (enum, optional) - Item type
+    + `PHYSICAL`
+    + `DISCOUNT`
+    + `SHIPPING_FEE`
+    + `SALES_TAX`
+    + `DIGITAL`
+    + `GIFT_CARD`
+    + `STORE_CREDIT`
+    + `FEE`
+    + `INSURANCE`
++ `variant`: `32GB SpaceGray` (string, optional) - Item variant
++ `description`: `Mobile phone with 32GB of RAM` (string, optional)
++ `producer`: `Apple` (string, optional)
++ `categories`: `mobile phones`,`FullHD`, `64GB` (array[string], optional) - List of item categories
++ `unitPrice` (Amount, optional) - Price per one piece. If empty, automatically considered that `unitPrice` is `totalPrice` / `quantity`.
++ `unitVat` (VatAmount, optional) - VAT amount per one piece. If empty, automatically considered that `unitVat` is `totalVat` / `quantity`.
++ `totalPrice` (Amount, required) - Total price for all pieces, VAT inclusive
++ `totalVat` (VatAmount, required) - Total VAT amount for all pieces
++ `image` (File, optional) - Item image
++ `productUrl`: `https://www.example.com?itemId=10` (string, optional) - URL of the item in e-shop
 
 ## BaseContract (SimpleContract)
 ### Properties
 + `activationDate`: `2018-05-05T18:34.0002+00:02` (string, optional, nullable) - Datetime of contract activation
 + `cancellationDate`: `2018-12-31T05:11.1234+00:01` (string, optional, nullable) - Datetime of contract cancellation
-+ `cancellationReason`: `CANCELLED_BY_ERP` (enum, optional, nullable) - reason for contract cancellation
++ `state`: `NEW` (enum, required) - state of the reason
+    + NEW
+    + ACTIVE
+    + CANCELLED
++ `stateReason`: `CANCELLED_BY_ERP` (enum, optional, nullable) - reason for contract state
     + CANCELLED_BY_ERP
     + CANCELLED_CUSTOM_REASON
     + CANCELLED_GOODS_RETURNED
     + CANCELLED_IN_14_DAYS
     + CANCELLED_NOT_PAID
     + CANCELLED_UNFINISHED
-+ `note`: `libovolná poznámka ke contactu a jeho zrušení` (string, optional, nullable) - Reason of the contract cancellation
 + `totalPrice` (Amount, optional) - Total order amount, including VAT
 + `totalVat` (array[VatAmount], optional) - Total VAT amounts split by their VAT rates
-
 
 ## ResponseContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
@@ -304,40 +329,48 @@ This is a contract object that the API returns in resonse to most requests.
 + `items` (array[ContractResponseItem], required) - Subject of the contract
 + `documents` (array[ResponseDocument], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
-
 ## CreateContract (SimpleContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
-+ `contractItems` (array[ContractRequestItem], required) - Subject of the contract
-
++ `serviceOptionIds`: `1` (array[string], required) - Array of service IDs, only array with one item is allowed. The Id to put here is the service option Id.
 
 ## UpdateContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
 + `contractItems` (array[ContractUpdateItem], required) - Subject of the contract
 
+## PartialUpdateContract (object)
+This is a contract object that serves the partial contract update.
+### Properties
++ `state`: `NEW` (enum, required) - state of the reason
+    + NEW
+    + ACTIVE
+    + CANCELLED
++ `stateReason`: `CANCELLED_BY_ERP` (enum, optional, nullable) - reason for contract state
+    + CANCELLED_BY_ERP
+    + CANCELLED_CUSTOM_REASON
+    + CANCELLED_GOODS_RETURNED
+    + CANCELLED_IN_14_DAYS
+    + CANCELLED_NOT_PAID
+    + CANCELLED_UNFINISHED
 
 ## ContractRequestItem (ContractCreateProduct)
 ### Properties
 + `services` (array[ContractItemService], required) - An array of Contract services for the item
 
-
 ## ContractUpdateItem (ContractRequestItem)
 ### Properties
 + `serialNumbers`: `ser-num-123`, `ser-num-456` (array[string], optional, nullable) - serial numbers
-
 
 ## ContractResponseItem (ProductDetail)
 ### Properties
 + `services` (array[ContractItemService], required) - An array of Contract services for the item
 
-
 ## ContractItemService
 ### Properties
 + `offerId`: `UUID-comes-here` (string, required) - Id of the original offer the contract is based upon. Enables creating one contract
-+ `serviceId`: 1 (number, required) - Id of the service option
++ `serviceId`: `1` (string, required) - Id of the service option
 + `serviceActiveUntilDate`: `2020-08-03T13:22:5000+00:02` (string, nullable) - datetime of service expiration (when the service is no longer valid)
-
 
 ## Address (object)
 Address
@@ -359,7 +392,6 @@ Address
     + `DELIVERY` - Delivery address
     + `BILLING` - Billing address
 
-
 ## CustomerBase (object)
 Customer data
 ### Properties
@@ -375,8 +407,7 @@ Customer data
 + `addresses` (array[Address], optional) - Addresses. All types are allowed.
 + `tin`: `12333321` (string, optional, nullable) - Tax identification number (ICO)
 + `vatin`: `CZ8402154456` (string, optional, nullable) - VAT identification number
-+ `customerEshopId`: `123` (string, optional, nullable) - ID of customer in eshop
-
++ `partnerCustomerId`: `123` (string, optional, nullable) - ID of customer in eshop
 
 ## Error (object)
 ### Properties
@@ -389,12 +420,10 @@ Customer data
 + attribute: `personalBirthNumber` (string, optional) - JSON path of request attribute that caused the error (if applicable)
 <!-- + ticketId: `UAT1:AMS:20160516-091658.450:45e4` (string, optional) - Internal ticket ID, used for error backtracking -->
 
-
 ## File (object)
 Represents a single file.
 ### Properties
 + `filename`: `invoice.pdf` (string, required) - File name.
-
 
 ## RequestFile (File)
 Represents a single file in request.
@@ -403,12 +432,10 @@ Represents a single file in request.
     + `content`: `RmlsZSBjb250ZW50cy4gwq9cXyjjg4QpXy/Crw==` (string, required) - File content (Base64 encoded, maximum size of encoded string is 500kB)
     + `url`: `https://www.example.com/file?id=12345` (string, required) - File URL.
 
-
 ## ResponseFile (File)
 Represents a single file in response.
 ### Properties
 + `url`: `https://www.example.com/file?id=12345` (string, required) - File URL.
-
 
 ## Document (object)
 Attached document (e.g. contract, invoice, credit note etc.)
@@ -430,7 +457,6 @@ Document in request
 Document in request
 ### Properties
 + `file` (ResponseFile, required)
-
 
 ## Errors (object)
 ### Properties
