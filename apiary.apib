@@ -234,7 +234,7 @@ Individual selectable service.
 + `description`: `Description of the service, may be quite long` (string, optional, nullable) - Description of a service offering item in the group.
 + `priority`: 1 (number, optional, nullable) - Offer ordering information, lower number means higher priority.
 + `totalPrice` (ServiceAmount, required) - Price of service including VAT and possibly type of price.
-+ `totalVat` (VatAmount, required) - Price of service including VAT and possibly type of price
++ `totalVat` (VatAmount, required) - Total VAT for service.
 + `standalone`: true (boolean, required) - If service is marked as `standalone`, it is __not__ mutually exclusive with other services within the service group and may be selected individually, much like HTML checkbox. This allows for grouping of services that are not exclusive to each other.
 
 ## ServiceResponseGroup (object)
