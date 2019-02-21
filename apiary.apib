@@ -330,10 +330,15 @@ This is a contract object that the API returns in resonse to most requests.
 + `items` (array[ContractResponseItem], required) - Subject of the contract
 + `documents` (array[ResponseDocument], optional, nullable) - Documents related to the contract, such as printable version of the contract, invoices etc.
 
+## MerchantUrls (object)
+### Properties
++ `notificationEndpoint`: `http://www.example.com/notifications` (string, optional, nullable) - Notification endpoint
+
 ## CreateContract (SimpleContract)
 This is a contract object that the API returns in resonse to most requests.
 ### Properties
 + `serviceOptionIds`: `1` (array[string], required) - Array of service IDs, only array with one item is allowed. The Id to put here is the service option Id.
++ `merchantUrls` (MerchantUrls, optional) - Merchant's endpoints URLs
 
 ## UpdateContract (BaseContract)
 This is a contract object that the API returns in resonse to most requests.
